@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+
+    <group
+        android:checkableBehavior="single"
+        android:title="Protection">
+
+        <item
+            android:id="@+id/nav_face_reco"
+            android:icon="@drawable/ic_face"
+            android:title="Face recognition"
+            android:visible="false" />
+        <item
+            android:id="@+id/nav_bio_sendsor"
+            android:icon="@drawable/ic_fingerprint"
+            android:title="Biometric Authentication" />
+        <item
+            android:id="@+id/nav_pin"
+            android:checked="true"
+            android:icon="@drawable/ic_dialpad"
+            android:title="PIN" />
+    </group>
+    <item android:title="Settings">
+        <menu>
+            <item
+                android:id="@+id/nav_actvate"
+                android:icon="@drawable/ic_checked"
+                android:title="Activate" />
+            <item
+                android:id="@+id/nav_encrol_face"
+                android:icon="@drawable/ic_enroll_face"
+                android:title="Enroll your face"
+                android:visible="false" />
+            <item
+                android:id="@+id/nav_change_pin"
+                android:icon="@drawable/ic_dialpad"
+                android:visible="false"
+                android:title="Change your PIN" />
+            <item
+                android:id="@+id/nav_deavtivate"
+                android:icon="@drawable/ic_cross"
+                android:title="Deactivate" />
+            <item
+                android:id="@+id/nav_get_info"
+                android:icon="@drawable/ic_notification"
+                android:title="@string/get_information"/>
+        </menu>
+    </item>
+</menu>

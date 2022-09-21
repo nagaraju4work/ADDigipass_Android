@@ -1,0 +1,24 @@
+<resources>
+
+    <!-- PIN_KEY pad -->
+    <string name="orch_pin_title">Entrez votre PIN</string>
+    <string name="orch_pin_title_confirm">Confirmez votre PIN</string>
+    <string name="orch_pin_title_new">Entrez un nouveau PIN</string>
+    <string name="orch_pin_title_confirm_new">Confirmez le nouveau PIN</string>
+    <string name="orch_pin_error_pin_weak">Ce PIN n\'est pas assez robuste</string>
+    <string name="orch_pin_error_no_match">Le PIN ne correspond pas au premier PIN rentré</string>
+
+    <!-- Fingerprint -->
+    <string name="orch_fingerprint_description">Merci d\'utiliser le scanner d\'empreinte digitale pour vous authentifier</string>
+    <string name="orch_fingerprint_failed">Echec de l\'authentification</string>
+    <string name="orch_fingerprint_btn_cancel">Annuler</string>
+    <string name="orch_fingerprint_btn_fallback">Autre</string>
+
+    <!-- Face recognition -->
+    <string name="orch_face_enroll">Merci de vous enroler</string>
+    <string name="orch_face_authenticate">Veuillez vous authentifier</string>
+    <string name="orch_face_challenge_face_left">Tournez la tête a gauche</string>
+    <string name="orch_face_challenge_face_right">Tournez la tête a droite</string>
+    <string name="orch_face_challenge_blink">Clignez des yeux</string>
+
+</resources>

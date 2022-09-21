@@ -1,0 +1,214 @@
+<resources>
+
+    <string name="welcome" translatable="false">Welcome</string>
+    <string name="welcome_subtitle" translatable="false">You have not yet personalized your app.\nYou need to register before you can start any orchestration operation to make your app unique so you can use it to authenticate and sign your transactions.</string>
+    <string name="registration" translatable="false">Registration</string>
+    <string name="prompt_user_id" translatable="false">User ID</string>
+    <string name="prompt_activation_password" translatable="false">Activation Password</string>
+    <string name="hi_user" translatable="false">Hi %1$s</string>
+    <string name="hi" translatable="false">Hi</string>
+    <string name="hi_subtitle" translatable="false">Currently waiting for remote notifications</string>
+    <string name="btn_start_activation" translatable="false">Start activation</string>
+    <string name="btn_register" translatable="false">Register</string>
+    <string name="preference_file_key" translatable="false">preferences</string>
+    <string name="pref_userIdentifier" translatable="false">userIdentifier</string>
+    <string name="pref_userSecurityType" translatable="false">userSecurityType</string>
+    <string name="pref_notificationId" translatable="false">notificationId</string>
+    <string name="want_to_sign_in" translatable="false">Are you trying to sign in to\n%1$s ?</string>
+    <string name="want_to_sign_data" translatable="false">Do you want to sign these data?\n\n%1$s</string>
+    <string name="btn_yes" translatable="false">Yes please</string>
+    <string name="btn_no" translatable="false">No, thanks</string>
+
+    <string name="dialog_progress_remote_incoming" translatable="false">Handling incoming request\nPlease wait…</string>
+    <string name="dialog_progress_remote_auth" translatable="false">Handling remote authentication request\nPlease wait…</string>
+    <string name="dialog_progress_remote_trans" translatable="false">Handling remote transaction request\nPlease wait…</string>
+    <string name="dialog_progress_local_auth" translatable="false">Handling local authentication request\nPlease wait…</string>
+    <string name="dialog_progress_local_tran" translatable="false">Handling local transaction request\nPlease wait…</string>
+    <string name="dialog_progress_change_pwd" translatable="false">Handling change password request\nPlease wait…</string>
+    <string name="dialog_progress_activating" translatable="false">Activating\nPlease wait…</string>
+
+    <string name="dialog_title_remote_auth" translatable="false">Remote Authentication</string>
+    <string name="dialog_content_remote_auth_success_signed_in" translatable="false">You have just signed in.</string>
+    <string name="dialog_content_remote_auth_success_rejected" translatable="false">You have rejected the request.</string>
+    <string name="dialog_title_remote_session_outdated" translatable="false">Session outdated</string>
+    <string name="dialog_content_remote_session_outdated" translatable="false">Your session is outdated.</string>
+    <string name="dialog_content_remote_session_accepted" translatable="false">Session accepted</string>
+    <string name="dialog_content_remote_session_expired" translatable="false">Session expired</string>
+    <string name="dialog_content_remote_session_refused" translatable="false">Session refused</string>
+    <string name="dialog_content_remote_auth_abortion" translatable="false">Remote authentication aborted.</string>
+    <string name="dialog_title_remote_tran" translatable="false">Remote Transaction Validation</string>
+    <string name="dialog_content_remote_tran_success_validated" translatable="false">Transaction validated.</string>
+    <string name="dialog_content_remote_tran_success_rejected" translatable="false">Transaction rejected.</string>
+    <string name="dialog_content_remote_tran_abortion" translatable="false">Remote transaction validation aborted.</string>
+
+
+    <string name="dialog_title_change_password" translatable="false">Change PIN</string>
+    <string name="dialog_content_change_password_success" translatable="false">Your PIN has been changed.</string>
+    <string name="dialog_content_change_password_abortion" translatable="false">Change PIN aborted.</string>
+
+    <string name="confirm_delete_user_title" translatable="false">User deletion</string>
+    <string name="confirm_delete_user_message" translatable="false">Are you sure you want to delete the user</string>
+    <string name="confirm_delete_user_yes" translatable="false">Yes</string>
+    <string name="confirm_delete_user_no" translatable="false">No</string>
+
+    <string name="dialog_error_title" translatable="false">Error</string>
+    <string name="dialog_error_content_sending" translatable="false">Error while sending orchestration command.</string>
+    <string name="dialog_error_content_notification" translatable="false">Failed to register for push notifications.</string>
+
+
+    <string name="title_activity_local_authentication" translatable="false">Local Authentication</string>
+    <string name="title_activity_local_transaction" translatable="false">Local Transaction</string>
+    <string name="title_activity_remote" translatable="false">Remote</string>
+    <string name="title_activity_change_password" translatable="false">Change PIN</string>
+    <string name="title_activity_get_information" translatable="false">Get Information</string>
+
+    <string name="label_user_identifier" translatable="false">User identifier</string>
+
+    <string name="radio_group_protection_type" translatable="false">Protection Type</string>
+    <string name="radio_group_anti_spoofing" translatable="false">Anti-spoofing</string>
+    <string name="protection_type_no_password" translatable="false">No PIN</string>
+    <string name="protection_type_password" translatable="false">PIN</string>
+    <string name="protection_type_fingerprint" translatable="false">Fingerprint</string>
+    <string name="protection_type_face_recognition" translatable="false">Face Recognition</string>
+    <string name="prompt_challenge" translatable="false">Challenge (optional)</string>
+    <string name="prompt_beneficiary" translatable="false">Beneficiary</string>
+    <string name="prompt_iban" translatable="false">IBAN</string>
+    <string name="prompt_amount" translatable="false">Amount</string>
+    <string name="btn_generate_opt" translatable="false">Generate OTP</string>
+    <string name="btn_sign_transaction" translatable="false">Sign Transaction</string>
+    <string name="btn_change_password" translatable="false">Change PIN</string>
+    <string name="anti_spoofing_none" translatable="false">None</string>
+    <string name="anti_spoofing_blink" translatable="false">Blink</string>
+    <string name="anti_spoofing_move_head" translatable="false">Move head</string>
+    <string name="anti_spoofing_all" translatable="false">Blink + Move head</string>
+
+
+    <string name="error_unknown" translatable="false">Unknown error</string>
+    <string name="error_user_id_null" translatable="false">The user identifier is null or empty</string>
+    <string name="error_user_id_invalid" translatable="false">The user identifier contains invalid characters</string>
+    <string name="error_activation_password_null" translatable="false">The activation password is null or empty</string>
+    <string name="error_activation_wrong_length" translatable="false">The activation password has a wrong length</string>
+    <string name="error_activation_wrong_checksum" translatable="false">The activation password is not correct</string>
+    <string name="error_pwd_null" translatable="false">The PIN is null</string>
+    <string name="error_pwd_too_short" translatable="false">The PIN is too short</string>
+    <string name="error_pwd_too_long" translatable="false">The PIN is too long</string>
+    <string name="error_pwd_wrong" translatable="false">The entered PIN is wrong</string>
+    <string name="error_pwd_weak" translatable="false">The entered PIN is weak</string>
+    <string name="error_pwd_locked" translatable="false">The digipass is locked after too many wrong PIN</string>
+    <string name="error_command_parsing_failure" translatable="false">Failed to parse command</string>
+    <string name="error_activation" translatable="false">Failed to activate</string>
+    <string name="error_local_authentication" translatable="false">Failed to perform local authentication</string>
+    <string name="error_local_transaction" translatable="false">Failed to perform local transaction</string>
+    <string name="error_remote_authentication" translatable="false">Failed to perform remote authentication</string>
+    <string name="error_notification_registration" translatable="false">Failed to register for notifications</string>
+    <string name="error_missing_location_permission" translatable="false">Location permissions are missing</string>
+    <string name="error_missing_read_phone_state_permission" translatable="false">Read phone state permission are not granted</string>
+    <string name="error_missing_cddc_permission" translatable="false">Mandatory permissions for CDDC are missing</string>
+    <string name="error_missing_bluetooth_permission" translatable="false">Bluetooth permission is missing</string>
+    <string name="error_missing_wifi_permission" translatable="false">Wifi permission is missing</string>
+    <string name="error_remote_transaction" translatable="false">Failed to perform remote transaction</string>
+    <string name="error_change_password" translatable="false">Failed to change PIN</string>
+    <string name="error_face_enrollment" translatable="false">Failed to enroll face</string>
+
+    <string name="warning_internal_error" translatable="false">Internal error</string>
+    <string name="warning_no_bluetooth_info" translatable="false">Bluetooth information not supported</string>
+    <string name="warning_no_bluetooth_permission" translatable="false">Bluetooth permission not granted</string>
+    <string name="warning_no_location_permission" translatable="false">Location permission not granted</string>
+    <string name="warning_location_timeout" translatable="false">Timeout when retrieving location</string>
+    <string name="warning_no_location" translatable="false">Failed to get location</string>
+    <string name="warning_no_wifi_permission" translatable="false">Wifi permission not granted</string>
+    <string name="warning_unknown_error" translatable="false">Unknown error</string>
+
+
+    <!-- PIN_KEY pad -->
+    <string name="orch_pin_title">Enter your PIN</string>
+    <string name="orch_pin_title_confirm">Confirm your PIN</string>
+    <string name="orch_pin_title_new">Enter new PIN</string>
+    <string name="orch_pin_title_confirm_new">Confirm new PIN</string>
+    <string name="orch_pin_error_pin_weak">This PIN is not strong enough. Please retry with complex PIN.</string>
+    <string name="orch_pin_error_no_match">The provided PIN does not match the previous one</string>
+
+    <!-- Fingerprint -->
+    <string name="orch_fingerprint_description">Please, use your fingerprint scanner to authenticate</string>
+    <string name="orch_fingerprint_failed">Authentication failed</string>
+    <string name="orch_fingerprint_btn_cancel">Cancel</string>
+    <string name="orch_fingerprint_btn_fallback">Fallback</string>
+
+    <!-- Face recognition -->
+    <string name="orch_face_enroll">Please enroll</string>
+    <string name="orch_face_authenticate">Please authenticate</string>
+    <string name="orch_face_challenge_face_left">Turn face left</string>
+    <string name="orch_face_challenge_face_right">Turn face right</string>
+    <string name="orch_face_challenge_blink">Blink</string>
+    <string name="welcom_text">Welcome</string>
+    <string name="thank_you">Thank You</string>
+    <string name="home_screen_msg">For using the Abu Dhabi Police intelligent Adaptive Authentication services.</string>
+
+    <string name="get_started_msg">Get started and Click in button below to scan a cronto code and start your activation</string>
+    <string name="action_settings">Settings</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">Select User: </string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="one_time_password">One time password</string>
+    <string name="hello_user">Hello, %s</string>
+    <string name="new_otp">New OTP</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="get_information">About Digipass</string>
+    <string name="click_above_for_otp">Click above button to generate OTP.</string>
+
+
+    <!-- Activity elements -->
+    <string name="fingerprint_status">Fingerprint status</string>
+    <string name="fingerprint_supported">Is fingerprint authentication supported?</string>
+    <string name="fingerprint_used">Is fingerprint authentication usable?</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="verify_title">Verify user\'s fingerprint.</string>
+    <string name="verify_with_dialog_btn">Verify with dialog</string>
+    <string name="verify_btn">Verify</string>
+    <string name="stop_btn">Stop</string>
+    <string name="use_fallback">Use fallback</string>
+    <string name="fallback_text">Fallback</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+    <string name="scan_started">Scan started</string>
+
+    <!-- Scan callback -->
+    <string name="fallback_called">Fallback called</string>
+    <string name="scan_cancelled">Scan cancelled</string>
+    <string name="scan_error">Error during scan: %s</string>
+    <string name="scan_fail">Scan failed: %s</string>
+    <string name="scan_success">Successfully authenticated</string>
+    <string name="timeout">Timeout</string>
+
+    <!-- Error string -->
+    <string name="internal_error">Internal error</string>
+    <string name="dialog_parameter_invalid">One of the dialog parameter is invalid</string>
+    <string name="biometric_sensor_dialog_params_null">The dialog parameters object is null</string>
+    <string name="activity_null">The activity is null</string>
+    <string name="biometric_listener_null">The biometric listener is null</string>
+    <string name="fingerprint_not_usable">Fingerprint is not supported by the device or there is no registered fingerprint</string>
+    <string name="permission_denied">Fingerprint permission was not granted to the application</string>
+    <string name="scan_already_running">A fingerprint scan is already running</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="notification_title">Notification from Digipass</string>
+    <string name="set_pin_for_authentication">Set Authentication PIN to complete Activation</string>
+    <string name="cancel">CANCEL</string>
+    <string name="confirm_pin">Confirm Authentication PIN to complete Activation</string>
+    <string name="pin_not_match">Incorrect PIN. %d attempt(s) left.</string>
+    <string name="enter_your_pin">Enter PIN</string>
+    <string name="windows_logon">Windows Logon</string>
+    <string name="windows_logon_msg">Are you trying to logon to Windows?</string>
+    <string name="yes_iam">YES I AM</string>
+    <string name="no_iam_not">NO, I AM NOT</string>
+    <string name="selected_user">Selected User:</string>
+
+    <string name="new_fingerprint_enrolled_description">A new fingerprint was added to this device, so your PIN is required.</string>
+    <string name="hi_guest">Hi, Guest</string>
+</resources>

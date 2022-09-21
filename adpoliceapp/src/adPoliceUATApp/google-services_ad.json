@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "410485061222",
+    "firebase_url": "https://mfa-adp.firebaseio.com",
+    "project_id": "mfa-adp",
+    "storage_bucket": "mfa-adp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410485061222:android:05186362f13d780b",
+        "android_client_info": {
+          "package_name": "ae.adpolice.gov"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "410485061222-s2imcj81ov3lv6o9po46hrhkb78drdud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7JJyWzxIEz32o8BkVKGvggPGw32lwm5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "410485061222-s2imcj81ov3lv6o9po46hrhkb78drdud.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "410485061222-5js2gouneji5n54k0sc1hotflr6qk7g1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.adpolice.mfa"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

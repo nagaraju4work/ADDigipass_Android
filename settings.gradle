@@ -1,0 +1,1 @@
+include ':adpoliceapp', ':NotificationSDKClient', ':QRCodeScannerSDK', ':UtilitiesSDK', ':number-keypad-lib'

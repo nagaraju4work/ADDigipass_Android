@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "77678659573",
+    "firebase_url": "https://adp-onespan.firebaseio.com",
+    "project_id": "adp-onespan",
+    "storage_bucket": "adp-onespan.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77678659573:android:fb007d6cfcdf89d4ddc2bc",
+        "android_client_info": {
+          "package_name": "ae.adpolice.gov.uat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "77678659573-h3vieskikooquu0h88hss6enpbqsho37.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqxyaovEbXKYo3x7XCwj1FnqD_Xy0cZY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "77678659573-h3vieskikooquu0h88hss6enpbqsho37.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/edit_name"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@android:color/transparent"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvErrorMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="center"
+        android:minHeight="30dp"
+        android:textColor="@color/red_color"
+        android:visibility="visible"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/firstPinView" />
+
+    <TextView
+        android:id="@+id/tvEnterPinMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:drawableStart="@drawable/ic_dialpad"
+        android:drawablePadding="16dp"
+        android:gravity="center"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="@string/orch_pin_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.chaos.view.PinView
+        android:id="@+id/firstPinView"
+        style="@style/PinWidget.PinView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:cursorVisible="true"
+        android:focusableInTouchMode="false"
+        android:gravity="center_horizontal"
+        android:inputType="textPassword"
+        android:itemBackground="@android:color/transparent"
+        android:padding="@dimen/common_padding"
+        android:textColor="@color/line_colors"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:cursorColor="@color/line_selected"
+        app:cursorWidth="2dp"
+        app:hideLineWhenFilled="true"
+        app:itemCount="6"
+        app:itemHeight="48dp"
+        app:itemRadius="0dp"
+        app:itemSpacing="0dp"
+        app:itemWidth="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvEnterPinMsg"
+        app:lineWidth="0dp"
+        app:viewType="rectangle" />
+
+    <com.davidmiguel.numberkeyboard.NumberKeyboard
+        android:id="@+id/numberKeyboard"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="96dp"
+        android:minHeight="300dp"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvErrorMessage"
+        app:numberkeyboard_keyboardType="integer" />
+</androidx.constraintlayout.widget.ConstraintLayout>
