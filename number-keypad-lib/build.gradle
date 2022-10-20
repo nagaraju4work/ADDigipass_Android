@@ -1,28 +1,33 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-android'
-
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+}
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 32
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 28
+        targetSdkVersion 32
+        compileSdkVersion 32
         versionCode 3
         versionName "3.0.0"
         consumerProguardFiles 'proguard-rules.pro'
         vectorDrawables.useSupportLibrary = true
     }
-
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
     resourcePrefix 'numberkeyboard_'
 }
 
 dependencies {
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    api 'androidx.core:core:1.1.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.3.50'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    api 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.annotation:annotation:1.4.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.6.0'
 }

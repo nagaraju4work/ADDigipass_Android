@@ -57,6 +57,7 @@ import com.vasco.digipass.sdk.utils.utilities.UtilitiesSDK;
 import com.vasco.dsapp.client.responses.SRPClientEphemeralKeyResponse;
 
 import java.util.List;
+import java.util.Objects;
 
 import ae.adpolice.gov.fragments.PinDialogFragment;
 import ae.adpolice.gov.network.RetrofitClient;
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         // If request is cancelled, the result arrays are empty.
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == ACCESS_CAMERA_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission was granted.
@@ -105,7 +107,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private DrawerLayout drawer;
-    private TextView tvHeaderTitle, tvSubHeaderTitle;
     private NavigationView navigationView;
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -125,9 +126,9 @@ public class MainActivity extends AppCompatActivity implements
 
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        tvHeaderTitle = navigationView.getHeaderView(0).findViewById(R.id.tvHeaderTitle);
+        TextView tvHeaderTitle = navigationView.getHeaderView(0).findViewById(R.id.tvHeaderTitle);
         tvHeaderTitle.setText(R.string.welcom_text);
-        tvSubHeaderTitle = navigationView.getHeaderView(0).findViewById(R.id.tvSubHeaderTitle);
+        TextView tvSubHeaderTitle = navigationView.getHeaderView(0).findViewById(R.id.tvSubHeaderTitle);
 
         // We have 2 layouts, one when no user is activated, the other when a user is activated
         layoutActivated = findViewById(R.id.layout_activated);
@@ -264,14 +265,11 @@ public class MainActivity extends AppCompatActivity implements
         tvOtp = findViewById(R.id.tvOTP);
         tvOtp.setOnClickListener(onClickListener);
         findViewById(R.id.ivRefresh).setOnClickListener(onClickListener);
-        findViewById(R.id.ivDrawer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (drawer.isDrawerOpen(GravityCompat.START)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                } else {
-                    drawer.openDrawer(GravityCompat.START);
-                }
+        findViewById(R.id.ivDrawer).setOnClickListener(v -> {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                drawer.openDrawer(GravityCompat.START);
             }
         });
         registerVascoSDK();
@@ -284,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements
         RetrofitClient.getOneSpanServices().getServerTime(Constants.getAuthorization())
                 .enqueue(new Callback<ServerTimeResponse>() {
                     @Override
-                    public void onResponse(Call<ServerTimeResponse> call, Response<ServerTimeResponse> response) {
+                    public void onResponse(@NonNull Call<ServerTimeResponse> call, @NonNull Response<ServerTimeResponse> response) {
                         if (response.isSuccessful()) {
                             if (response.body() != null) {
                                 UserSession.getInstance(MainActivity.this)
@@ -295,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
 
                     @Override
-                    public void onFailure(Call<ServerTimeResponse> call, Throwable t) {
+                    public void onFailure(@NonNull Call<ServerTimeResponse> call, @NonNull Throwable t) {
                         Crashlytics.logException(t);
                     }
                 });
@@ -323,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements
             if (UserSession.getInstance(MainActivity.this).getCurrentUser().isAuthenticateChoice()) {
                 navigationView.getMenu().findItem(R.id.nav_pin).setChecked(false);
                 try {
-                    if (BiometricSensorSDK.isUserFingerprintSupportedByPlatform(MainActivity.this) && BiometricSensorSDK.isUserFingerprintUsable(MainActivity.this)) {
+                    if (BiometricSensorSDK.isUserBiometrySupportedByPlatform(MainActivity.this) && BiometricSensorSDK.isUserBiometryUsable(MainActivity.this)) {
                         navigationView.getMenu().findItem(R.id.nav_bio_sendsor).setChecked(true);
                     }
                 } catch (BiometricSensorSDKException e) {
@@ -334,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 navigationView.getMenu().findItem(R.id.nav_pin).setChecked(true);
                 try {
-                    if (BiometricSensorSDK.isUserFingerprintSupportedByPlatform(MainActivity.this) && BiometricSensorSDK.isUserFingerprintUsable(MainActivity.this)) {
+                    if (BiometricSensorSDK.isUserBiometrySupportedByPlatform(MainActivity.this) && BiometricSensorSDK.isUserBiometryUsable(MainActivity.this)) {
                         navigationView.getMenu().findItem(R.id.nav_bio_sendsor).setChecked(false);
                     }
                 } catch (BiometricSensorSDKException e) {
@@ -356,33 +354,24 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        switch (id) {
-            case R.id.nav_actvate:
-                onStartActivationClicked(findViewById(R.id.ivScan));
-                break;
-            case R.id.nav_deavtivate:
-                onDeleteUser();
-                break;
-            case R.id.nav_bio_sendsor:
-                UserSession.getInstance(MainActivity.this).setAuthenticateChoice(true);
-                break;
-            case R.id.nav_change_pin:
-                progressDialog = UIUtils.displayProgress(this, getString(R.string.dialog_progress_change_pwd));
-                break;
-            case R.id.nav_pin:
-                UserSession.getInstance(MainActivity.this).setAuthenticateChoice(false);
-                break;
-            case R.id.nav_get_info:
-                FragmentManager fm = getSupportFragmentManager();
-                GetInfoFragment getInfoFragment = new GetInfoFragment();
-                getInfoFragment.show(fm, "fragment_get_info");
-                break;
-
+        if (id == R.id.nav_actvate) {
+            onStartActivationClicked(findViewById(R.id.ivScan));
+        } else if (id == R.id.nav_deavtivate) {
+            onDeleteUser();
+        } else if (id == R.id.nav_bio_sendsor) {
+            UserSession.getInstance(MainActivity.this).setAuthenticateChoice(true);
+        } else if (id == R.id.nav_change_pin) {
+            progressDialog = UIUtils.displayProgress(this, getString(R.string.dialog_progress_change_pwd));
+        } else if (id == R.id.nav_pin) {
+            UserSession.getInstance(MainActivity.this).setAuthenticateChoice(false);
+        } else if (id == R.id.nav_get_info) {
+            FragmentManager fm = getSupportFragmentManager();
+            GetInfoFragment getInfoFragment = new GetInfoFragment();
+            getInfoFragment.show(fm, "fragment_get_info");
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -422,7 +411,7 @@ public class MainActivity extends AppCompatActivity implements
                 RetrofitClient.getOneSpanServices().updateNotificationID(Constants.getAuthorization(), updateNotificationRequest)
                         .enqueue(new Callback<UpdateNotificationResponse>() {
                             @Override
-                            public void onResponse(Call<UpdateNotificationResponse> call, Response<UpdateNotificationResponse> response) {
+                            public void onResponse(@NonNull Call<UpdateNotificationResponse> call, @NonNull Response<UpdateNotificationResponse> response) {
                                 if (response.isSuccessful()) {
                                     if (response.body() != null) {
                                         if (response.body().getResultCodes().getReturnCodeEnum().equals("RET_SUCCESS")) {
@@ -433,7 +422,7 @@ public class MainActivity extends AppCompatActivity implements
                             }
 
                             @Override
-                            public void onFailure(Call<UpdateNotificationResponse> call, Throwable t) {
+                            public void onFailure(@NonNull Call<UpdateNotificationResponse> call, @NonNull Throwable t) {
                                 Crashlytics.logException(t);
                             }
                         });
@@ -478,7 +467,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         // Update user selection spinner
         List<User> users = UserSession.getInstance(MainActivity.this).getUsers();
-        ArrayAdapter<User> userAdapter = new ArrayAdapter<User>(this, R.layout.spinner_layout, users);
+        ArrayAdapter<User> userAdapter = new ArrayAdapter<>(this, R.layout.spinner_layout, users);
         userSpinner.setAdapter(userAdapter);
         userSpinner.setSelection(((ArrayAdapter<User>) userSpinner.getAdapter()).getPosition(activatedUser));
 
@@ -528,16 +517,8 @@ public class MainActivity extends AppCompatActivity implements
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                    }
-                });
+                .setPositiveButton("Yes", (dialog, id) -> startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                .setNegativeButton("No", (dialog, id) -> dialog.cancel());
         final AlertDialog alert = builder.create();
         alert.show();
     }
@@ -559,14 +540,11 @@ public class MainActivity extends AppCompatActivity implements
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Permission request");
                 builder.setMessage("The requested permission is used to scan codes.");
-                builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        // Request permission for the CAMERA permission
-                        ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[]{Manifest.permission.CAMERA},
-                                ACCESS_CAMERA_REQUEST_CODE);
-                    }
+                builder.setOnCancelListener(dialog -> {
+                    // Request permission for the CAMERA permission
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.CAMERA},
+                            ACCESS_CAMERA_REQUEST_CODE);
                 });
                 builder.create().show();
             } else {
@@ -581,11 +559,9 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    private Dialog otpDialog;
-
     private void generateOTP(String pin) {
-        otpDialog = UIUtils.displayProgress(MainActivity.this, "Generating OTP");
-        GenerationResponse generateResponse = null;
+        Dialog otpDialog = UIUtils.displayProgress(MainActivity.this, "Generating OTP");
+        GenerationResponse generateResponse ;
         byte[] dynamicVector = UserSession.getInstance(MainActivity.this).getDynamicVector();
         generateResponse = DigipassSDK.generateResponseOnly(
                 UserSession.getInstance(MainActivity.this).getStaticVector(UserSession.getInstance(MainActivity.this).getCurrentUser().getUserId()),
@@ -631,11 +607,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void onDeleteUser() {
 
-        DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                onDeleteUserInternal();
-            }
-        };
+        DialogInterface.OnClickListener deleteListener = (dialog, id) -> onDeleteUserInternal();
 
         UIUtils.displayAlertWithAction(MainActivity.this,
                 getString(R.string.confirm_delete_user_title),
@@ -707,7 +679,14 @@ public class MainActivity extends AppCompatActivity implements
                     byte[] tmp = UtilitiesSDK.hexaToBytes(result);
 
                     String credentials = new String(tmp);
-                    String[] values = credentials.split(",");
+                    String[] values = credentials.split(Utils.STRING_SPLIT_CHARACTER);
+                    if(values.length<=1){
+                        values = credentials.split(Utils.STRING_ALTERNATE_SPLIT_CHARACTER);
+                        if(values.length<=1) {
+                            Toast.makeText(this, "Registration process is failed due to wrong Cronto input code.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
                     Utils.getInstance().putStringInSecureCache(Constants.CREDENTIALS_KEY, credentials);
                     String userId;
                     String[] activationPasswords;
@@ -716,7 +695,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     userId = values[0];
                     try {
-                        if (BiometricSensorSDK.isUserFingerprintSupportedByPlatform(MainActivity.this)) {
+                        if (BiometricSensorSDK.isUserBiometrySupportedByPlatform(MainActivity.this)) {
                             activationPasswords = new String[2];
                             activationPasswords[0] = values[2];
                             activationPasswords[1] = values[4];
@@ -780,7 +759,7 @@ public class MainActivity extends AppCompatActivity implements
                         break;
                     case QRCodeScannerSDKErrorCodes.INTERNAL_ERROR:
                         Toast.makeText(MainActivity.this, "An internal error occurred during QRCode scanning: "
-                                        + exception.getCause().getMessage(),
+                                        + Objects.requireNonNull(exception.getCause()).getMessage(),
                                 Toast.LENGTH_LONG).show();
                         break;
 

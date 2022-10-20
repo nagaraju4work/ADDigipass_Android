@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="ae.adpolice.gov">
     <!-- Needed for online activation and general networking usage -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -18,18 +20,16 @@
         android:required="false" />
 
     <uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY" />
-    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
     <application
         android:allowBackup="false"
-        android:appComponentFactory="ADDigipass"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_config"
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="android:appComponentFactory"
         tools:targetApi="p">
         <!-- Needed for Notification -->
         <meta-data
@@ -39,7 +39,8 @@
         <activity
             android:name="ae.adpolice.gov.SplashActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,7 +50,8 @@
         <activity
             android:name="ae.adpolice.gov.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false">
             <intent-filter>
                 <action android:name="ae.adpolice.gov.MAIN_ACTIVITY" />
 
@@ -62,7 +64,8 @@
 
         <activity
             android:name="ae.adpolice.gov.fcm.HandleFCMNotificationActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <!-- This intent filter is used to select the activity that will be launched
                         when the user clicks on a notification.
                         The MIME type is customizable. Make sure it matches the "notificationMIMEType"

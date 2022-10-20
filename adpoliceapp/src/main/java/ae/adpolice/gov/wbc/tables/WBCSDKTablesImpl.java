@@ -3,10 +3,10 @@ package ae.adpolice.gov.wbc.tables;
 
 import com.vasco.digipass.sdk.utils.utilities.UtilitiesSDK;
 import com.vasco.digipass.sdk.utils.utilities.UtilitiesSDKConstants;
-import com.vasco.digipass.sdk.utils.utilities.wbc.SerializationR;
-import com.vasco.digipass.sdk.utils.utilities.wbc.WbAesUtils;
-import com.vasco.digipass.sdk.utils.utilities.wbc.matrix.MzdMatrix;
+import com.vasco.digipass.sdk.utils.wbc.MzdMatrix;
+import com.vasco.digipass.sdk.utils.wbc.SerializationR;
 import com.vasco.digipass.sdk.utils.wbc.WBCSDKTables;
+import com.vasco.digipass.sdk.utils.wbc.WbAesUtils;
 
 /**
  * Accesses the whitebox encryption tables

@@ -15,10 +15,13 @@ import ae.adpolice.gov.Constants;
 
 public class Utils {
     private SecureStorageSDK secureCache;
-    private Random random;
+    private final Random random;
+    public static final String STRING_SPLIT_CHARACTER=",";
+    public static final String STRING_ALTERNATE_SPLIT_CHARACTER=";";
 
     public static void Log(String tag, String msg) {
         if (BuildConfig.DEBUG) {
+            Log.v(tag, msg);
         }
     }
 
@@ -106,22 +109,22 @@ public class Utils {
     public String[] getActivationPasswords() {
         String cred = getStringFromSecureCache(Constants.CREDENTIALS_KEY);
         String[] activationPasswords = new String[2];
-        activationPasswords[0] = cred.split(",")[2];
-        activationPasswords[1] = cred.split(",")[4];
+        activationPasswords[0] = cred.split(STRING_SPLIT_CHARACTER)[2];
+        activationPasswords[1] = cred.split(STRING_SPLIT_CHARACTER)[4];
         return activationPasswords;
     }
 
     public String[] getRegistrationIdentifiers() {
         String cred = getStringFromSecureCache(Constants.CREDENTIALS_KEY);
         String[] registrationIdentifiers = new String[2];
-        registrationIdentifiers[0] = cred.split(",")[1];
-        registrationIdentifiers[1] = cred.split(",")[3];
+        registrationIdentifiers[0] = cred.split(STRING_SPLIT_CHARACTER)[1];
+        registrationIdentifiers[1] = cred.split(STRING_SPLIT_CHARACTER)[3];
         return registrationIdentifiers;
     }
 
     String getUserId() {
         String cred = getStringFromSecureCache(Constants.CREDENTIALS_KEY);
-        return cred.split(",")[0];
+        return cred.split(STRING_SPLIT_CHARACTER)[0];
     }
 
 }
