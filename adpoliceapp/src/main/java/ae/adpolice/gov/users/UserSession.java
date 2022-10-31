@@ -1,9 +1,12 @@
 package ae.adpolice.gov.users;
 
+import static ae.adpolice.gov.Constants.BIOMETRIC_STATUS;
+import static ae.adpolice.gov.Constants.CLIENT_SERVER_TIME_SHIFT_KEY;
+import static ae.adpolice.gov.Constants.getIterationNumber;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 
-import com.crashlytics.android.Crashlytics;
-import com.google.gson.Gson;
 import com.vasco.digipass.sdk.utils.securestorage.SecureStorageSDK;
 import com.vasco.digipass.sdk.utils.securestorage.SecureStorageSDKException;
 
@@ -11,28 +14,24 @@ import java.util.List;
 
 import ae.adpolice.gov.Constants;
 import ae.adpolice.gov.users.pojo.User;
-
-import static ae.adpolice.gov.Constants.BIOMETRIC_STATUS;
-import static ae.adpolice.gov.Constants.CLIENT_SERVER_TIME_SHIFT_KEY;
-import static ae.adpolice.gov.Constants.getIterationNumber;
+import ae.adpolice.gov.utils.Crashlytics;
 
 
 public class UserSession {
 
-    private Context mContext;
-    private Gson gson;
+    private final Context mContext;
     private SecureStorageSDK secureStorage;
+    @SuppressLint("StaticFieldLeak")
     private static UserSession instance = null;
 
     private UserSession(Context context) {
         this.mContext = context;
-        gson = new Gson();
         init(context.getApplicationContext());
     }
 
     public void init(Context context) {
         try {
-            if(Constants.isSaltStorageEmpty()){
+            if (Constants.isSaltStorageEmpty()) {
                 Constants.initializeSalts();
             }
             secureStorage = SecureStorageSDK.init("digipass", Constants.getDevicePlatformFingerprintForStorage(context), getIterationNumber(), context);
@@ -50,7 +49,7 @@ public class UserSession {
         return instance;
     }
 
-    public SecureStorageSDK getSecureStorage(){
+    public SecureStorageSDK getSecureStorage() {
         return secureStorage;
     }
 
@@ -66,15 +65,6 @@ public class UserSession {
     public byte[] getDynamicVectorPin(String userId) {
         try {
             return secureStorage.getBytes(Constants.getDynamicVectorPinKey(userId));
-        } catch (SecureStorageSDKException e) {
-            Crashlytics.logException(e);
-        }
-        return null;
-    }
-
-    public byte[] getDynamicVectorBio(String userId) {
-        try {
-            return secureStorage.getBytes(Constants.getDynamicVectorBioKey(userId));
         } catch (SecureStorageSDKException e) {
             Crashlytics.logException(e);
         }
@@ -128,7 +118,7 @@ public class UserSession {
 
     public boolean hasBiometricChanged() {
         try {
-            if(!secureStorage.contains(BIOMETRIC_STATUS)){
+            if (!secureStorage.contains(BIOMETRIC_STATUS)) {
                 return false;
             }
             return Boolean.parseBoolean(secureStorage.getString(BIOMETRIC_STATUS));

@@ -3,7 +3,6 @@ package ae.adpolice.gov;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -16,12 +15,12 @@ import android.security.keystore.KeyProperties;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.crashlytics.android.Crashlytics;
 import com.vasco.digipass.sdk.utils.geolocation.GeolocationSDK;
 import com.vasco.digipass.sdk.utils.geolocation.GeolocationSDKArea;
 import com.vasco.digipass.sdk.utils.geolocation.GeolocationSDKErrorCodes;
@@ -48,9 +47,9 @@ import javax.crypto.SecretKey;
 
 import ae.adpolice.gov.fragments.PinDialogFragment;
 import ae.adpolice.gov.users.UserSession;
+import ae.adpolice.gov.utils.Crashlytics;
 import ae.adpolice.gov.utils.UIUtils;
 import ae.adpolice.gov.utils.Utils;
-import io.fabric.sdk.android.Fabric;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -62,7 +61,6 @@ public class SplashActivity extends AppCompatActivity {
         // Hide the status bar.
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
-        Fabric.with(this, new Crashlytics());
         Constants.initializeSalts();
         Utils.getInstance().initSecureCache(SplashActivity.this);
         initCreateKeys();
@@ -74,12 +72,7 @@ public class SplashActivity extends AppCompatActivity {
             isConnected = networkInfo != null && networkInfo.isConnected();
         }
         if (UserSession.getInstance(SplashActivity.this).getCurrentUser() == null && !isConnected) {
-            UIUtils.displayAlert(SplashActivity.this, "No Internet", "Internet connectivity not exists to activate the Device. Please try later.", "Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    SplashActivity.this.finish();
-                }
-            });
+            UIUtils.displayAlert(SplashActivity.this, "No Internet", "Internet connectivity not exists to activate the Device. Please try later.", "Ok", (dialog, which) -> SplashActivity.this.finish());
             return;
         }
         try {
@@ -99,14 +92,11 @@ public class SplashActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Permission request");
                 builder.setMessage("The requested permission is used to retrieve the device's position.");
-                builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        // Request permission for the ACCESS_FINE_LOCATION permission
-                        ActivityCompat.requestPermissions(SplashActivity.this,
-                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                ACCESS_FINE_LOCATION_REQUEST_CODE);
-                    }
+                builder.setOnCancelListener(dialog -> {
+                    // Request permission for the ACCESS_FINE_LOCATION permission
+                    ActivityCompat.requestPermissions(SplashActivity.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            ACCESS_FINE_LOCATION_REQUEST_CODE);
                 });
                 builder.create().show();
             } else {
@@ -123,16 +113,8 @@ public class SplashActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                    }
-                });
+                .setPositiveButton("Yes", (dialog, id) -> startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                .setNegativeButton("No", (dialog, id) -> dialog.cancel());
         final AlertDialog alert = builder.create();
         alert.show();
     }
@@ -149,7 +131,7 @@ public class SplashActivity extends AppCompatActivity {
      * North hemisphere.
      */
     private static final GeolocationSDKArea NORTH_HEMISPHERE_AREA = new GeolocationSDKArea(0, -180, 90, 180);
-   // private static final GeolocationSDKArea UAE_HEMISPHERE_AREA = new GeolocationSDKArea(24.295259, 54.235676, 24.610394, 54.283631);
+    // private static final GeolocationSDKArea UAE_HEMISPHERE_AREA = new GeolocationSDKArea(24.295259, 54.235676, 24.610394, 54.283631);
     //    /**
     //     * South hemisphere.
     //     */
@@ -178,7 +160,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == ACCESS_FINE_LOCATION_REQUEST_CODE) {// If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -191,7 +173,6 @@ public class SplashActivity extends AppCompatActivity {
                 // In our case, we display a toast message.
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show();
             }
-            return;
         }
     }
 
@@ -208,12 +189,6 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-    }
-
     /**
      * Clears screen.
      * Remove alert dialog, progress bar, and any text.
@@ -221,20 +196,16 @@ public class SplashActivity extends AppCompatActivity {
     private void clearScreen() {
         closeAlertDialog();
         closeProgressBar();
-
     }
 
     /**
      * Displays a progress bar while retrieving location.
      */
     private void displayProgressBar() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (progressDialog == null) {
-                    progressDialog = ProgressDialog.show(SplashActivity.this, null,
-                            "Retrieving location...", true, false);
-                }
+        runOnUiThread(() -> {
+            if (progressDialog == null) {
+                progressDialog = ProgressDialog.show(SplashActivity.this, null,
+                        "Retrieving location...", true, false);
             }
         });
     }
@@ -265,174 +236,146 @@ public class SplashActivity extends AppCompatActivity {
      * @param e The exception
      */
     private void processError(final Exception e) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                String errorText;
-                Crashlytics.logException(e);
-                if (e instanceof GeolocationSDKException) {
-                    int errorCode = ((GeolocationSDKException) e).getErrorCode();
-                    switch (errorCode) {
-                        case GeolocationSDKErrorCodes.LOCATION_UNAVAILABLE:
-                            Utils.Log(TAG, "Location unavailable");
-                            errorText = "You must grant access to the geolocation service to use this application";
-                            break;
-                        case GeolocationSDKErrorCodes.INTERNAL_ERROR:
-                            Utils.Log(TAG, "Internal error " + e.getLocalizedMessage());
-                            errorText = "Internal error";
-                            break;
-                        case GeolocationSDKErrorCodes.PERMISSION_DENIED:
-                            Utils.Log(TAG, "Permission denied");
-                            errorText = "Permission denied";
-                            break;
-                        case GeolocationSDKErrorCodes.LOCATION_TIMEOUT:
-                            Utils.Log(TAG, "Timeout");
-                            errorText = "Timeout during geolocation";
-                            break;
-                        default:
-                            Utils.Log(TAG, "Other error " + e.getLocalizedMessage());
-                            errorText = "Error " + errorCode;
-                            break;
-                    }
-                } else {
-                    Utils.Log(TAG, "Unexpected error " + e.getLocalizedMessage());
-                    errorText = e.getMessage();
-                    Crashlytics.logException(e);
+        runOnUiThread(() -> {
+            String errorText;
+            Crashlytics.logException(e);
+            if (e instanceof GeolocationSDKException) {
+                int errorCode = ((GeolocationSDKException) e).getErrorCode();
+                switch (errorCode) {
+                    case GeolocationSDKErrorCodes.LOCATION_UNAVAILABLE:
+                        Utils.Log(TAG, "Location unavailable");
+                        errorText = "You must grant access to the geolocation service to use this application";
+                        break;
+                    case GeolocationSDKErrorCodes.INTERNAL_ERROR:
+                        Utils.Log(TAG, "Internal error " + e.getLocalizedMessage());
+                        errorText = "Internal error";
+                        break;
+                    case GeolocationSDKErrorCodes.PERMISSION_DENIED:
+                        Utils.Log(TAG, "Permission denied");
+                        errorText = "Permission denied";
+                        break;
+                    case GeolocationSDKErrorCodes.LOCATION_TIMEOUT:
+                        Utils.Log(TAG, "Timeout");
+                        errorText = "Timeout during geolocation";
+                        break;
+                    default:
+                        Utils.Log(TAG, "Other error " + e.getLocalizedMessage());
+                        errorText = "Error " + errorCode;
+                        break;
                 }
-
-                // Build the alert dialog that will display the error message.
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SplashActivity.this);
-                alertDialog = alertDialogBuilder.setTitle("Error").setMessage(errorText).setCancelable(true).create();
-                alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        // Close the application if cancel is pressed on the alert dialog.
-                        finish();
-                    }
-                });
-                alertDialog.show();
+            } else {
+                Utils.Log(TAG, "Unexpected error " + e.getLocalizedMessage());
+                errorText = e.getMessage();
+                Crashlytics.logException(e);
             }
+
+            // Build the alert dialog that will display the error message.
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SplashActivity.this);
+            alertDialog = alertDialogBuilder.setTitle("Error").setMessage(errorText).setCancelable(true).create();
+            alertDialog.setOnCancelListener(dialog -> {
+                // Close the application if cancel is pressed on the alert dialog.
+                finish();
+            });
+            alertDialog.show();
         });
     }
 
     /**
      * Display the result.
      *
-     * @param location     The location to display
      * @param isAuthorized True if the location is in the North hemisphere
      */
-    private void displayResult(final boolean isServiceAvailable, final GeolocationSDKLocation location,
+    private void displayResult(final boolean isServiceAvailable,
                                final boolean isAuthorized) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (isServiceAvailable) {
-                    if (isAuthorized) {
-                        if (initCipher(defaultCipher)) {
-                            Intent i = new Intent(SplashActivity.this, MainActivity.class);
-                            startActivity(i);
-                            SplashActivity.this.finish();
-                        } else {
-                            PinDialogFragment pinDialogFragment = new PinDialogFragment();
-                            pinDialogFragment.setToValidate(true);
-                            pinDialogFragment.setDescription(getString(R.string.new_fingerprint_enrolled_description));
-                            pinDialogFragment.setOnPinSetListener(new PinDialogFragment.OnPinSetListener() {
-                                @Override
-                                public void onPinSet(String pin) {
-                                    try {
-                                        mKeyStore.deleteEntry(DEFAULT_KEY_NAME);
-                                    } catch (KeyStoreException e) {
-                                        Crashlytics.logException(e);
-                                    }
-                                    createKey(DEFAULT_KEY_NAME, true);
-                                    Intent i = new Intent(SplashActivity.this, MainActivity.class);
-                                    startActivity(i);
-                                    SplashActivity.this.finish();
-                                }
-
-                                @Override
-                                public void onPinNotMatched() {
-                                    //TODO store the value in the secure storage
-                                    UserSession.getInstance(SplashActivity.this).setBiometricChanged(true);
-                                    Intent i = new Intent(SplashActivity.this, MainActivity.class);
-                                    startActivity(i);
-                                    SplashActivity.this.finish();
-                                }
-
-                                @Override
-                                public void onPinSetFailed() {
-                                    UserSession.getInstance(SplashActivity.this).setBiometricChanged(true);
-                                    Intent i = new Intent(SplashActivity.this, MainActivity.class);
-                                    startActivity(i);
-                                    SplashActivity.this.finish();
-                                }
-                            });
-                            pinDialogFragment.show(getSupportFragmentManager(), "New Fingerprint detected");
-                        }
+        runOnUiThread(() -> {
+            if (isServiceAvailable) {
+                if (isAuthorized) {
+                    if (initCipher(defaultCipher)) {
+                        Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                        startActivity(i);
+                        SplashActivity.this.finish();
                     } else {
-                        UIUtils.displayAlert(SplashActivity.this, "Unauthorized Zone",
-                                "You are not in an authorized zone to use the " + getString(R.string.app_name) + ". Please try using in Authorized Area. Thank you", "OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        SplashActivity.this.finish();
-                                    }
-                                });
+                        PinDialogFragment pinDialogFragment = new PinDialogFragment();
+                        pinDialogFragment.setToValidate(true);
+                        pinDialogFragment.setDescription(getString(R.string.new_fingerprint_enrolled_description));
+                        pinDialogFragment.setOnPinSetListener(new PinDialogFragment.OnPinSetListener() {
+                            @Override
+                            public void onPinSet(String pin) {
+                                try {
+                                    mKeyStore.deleteEntry(DEFAULT_KEY_NAME);
+                                } catch (KeyStoreException e) {
+                                    Crashlytics.logException(e);
+                                }
+                                createKey(DEFAULT_KEY_NAME, true);
+                                Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                                startActivity(i);
+                                SplashActivity.this.finish();
+                            }
+
+                            @Override
+                            public void onPinNotMatched() {
+                                //TODO store the value in the secure storage
+                                UserSession.getInstance(SplashActivity.this).setBiometricChanged(true);
+                                Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                                startActivity(i);
+                                SplashActivity.this.finish();
+                            }
+
+                            @Override
+                            public void onPinSetFailed() {
+                                UserSession.getInstance(SplashActivity.this).setBiometricChanged(true);
+                                Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                                startActivity(i);
+                                SplashActivity.this.finish();
+                            }
+                        });
+                        pinDialogFragment.show(getSupportFragmentManager(), "New Fingerprint detected");
                     }
                 } else {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SplashActivity.this);
-                    alertDialogBuilder.setTitle("Location Not Found");
-                    alertDialogBuilder.setMessage("Device Location still not found. Please restart the application or retry.");
-                    alertDialogBuilder.setNegativeButton("Retry", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            launchGeolocationThread();
-                        }
-                    });
-                    alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            SplashActivity.this.finish();
-                        }
-                    });
-                    alertDialogBuilder.setCancelable(false);
-                    alertDialogBuilder.create().show();
+                    UIUtils.displayAlert(SplashActivity.this, "Unauthorized Zone",
+                            "You are not in an authorized zone to use the " + getString(R.string.app_name) + ". Please try using in Authorized Area. Thank you", "OK", (dialog, which) -> SplashActivity.this.finish());
                 }
+            } else {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SplashActivity.this);
+                alertDialogBuilder.setTitle("Location Not Found");
+                alertDialogBuilder.setMessage("Device Location still not found. Please restart the application or retry.");
+                alertDialogBuilder.setNegativeButton("Retry", (dialog, which) -> launchGeolocationThread());
+                alertDialogBuilder.setPositiveButton("Ok", (dialog, which) -> SplashActivity.this.finish());
+                alertDialogBuilder.setCancelable(false);
+                alertDialogBuilder.create().show();
             }
         });
     }
 
-    private Thread geolocationThread = new Thread(new Runnable() {
+    private final Thread geolocationThread = new Thread(() -> {
+        GeolocationSDKLocation location;
+        location = new GeolocationSDKLocation(0, 0, 0, 0);
+        boolean isAuthorized = false;
+        boolean isServiceEnabled;
+        try {
+            // Check service availablility
+            if (isServiceEnabled = GeolocationSDK.isLocationServiceEnabled(SplashActivity.this)) {
+                // Get the geolocation
+                location = GeolocationSDK.getLocation(TIMEOUT, SplashActivity.this, 100);
 
-        @Override
-        public void run() {
-            GeolocationSDKLocation location = new GeolocationSDKLocation(0, 0, 0, 0);
-            boolean isAuthorized = false;
-            boolean isServiceEnabled = false;
-            try {
-                // Check service availablility
-                if (isServiceEnabled = GeolocationSDK.isLocationServiceEnabled(SplashActivity.this)) {
-                    // Get the geolocation
-                    location = GeolocationSDK.getLocation(TIMEOUT, SplashActivity.this, 100);
+                // Authorized zone = North hemisphere
+                List<GeolocationSDKArea> areaList = new ArrayList<>();
+                areaList.add(NORTH_HEMISPHERE_AREA);
 
-                    // Authorized zone = North hemisphere
-                    List<GeolocationSDKArea> areaList = new ArrayList<GeolocationSDKArea>();
-                    areaList.add(NORTH_HEMISPHERE_AREA);
-
-                    // Check if the location is in the authorized area
-                    isAuthorized = GeolocationSDK.isLocationAuthorized(location, areaList);
-                }
-            } catch (final Exception e) {
-                processError(e);
-                Crashlytics.logException(e);
-                return;
-            } finally {
-                closeProgressBar();
-                isGettingLocation = false;
+                // Check if the location is in the authorized area
+                isAuthorized = GeolocationSDK.isLocationAuthorized(location, areaList);
             }
-
-            displayResult(isServiceEnabled, location, isAuthorized);
-
+        } catch (final Exception e) {
+            processError(e);
+            Crashlytics.logException(e);
+            return;
+        } finally {
+            closeProgressBar();
+            isGettingLocation = false;
         }
+
+        displayResult(isServiceEnabled, isAuthorized);
+
     });
 
 

@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
-import com.crashlytics.android.Crashlytics;
 import com.vasco.digipass.sdk.DigipassSDK;
 import com.vasco.digipass.sdk.DigipassSDKConstants;
 import com.vasco.digipass.sdk.DigipassSDKReturnCodes;
@@ -20,9 +20,9 @@ import com.vasco.digipass.sdk.responses.SecureChannelDecryptionResponse;
 import com.vasco.digipass.sdk.responses.SecureChannelGenerateResponse;
 import com.vasco.digipass.sdk.responses.SecureChannelParseResponse;
 import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDK;
-import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDKDialogParams;
 import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDKException;
-import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDKListener;
+import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDKParams;
+import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDKScanListener;
 import com.vasco.digipass.sdk.utils.notification.client.NotificationSDKClient;
 import com.vasco.digipass.sdk.utils.notification.client.exceptions.NotificationSDKClientException;
 import com.vasco.digipass.sdk.utils.utilities.UtilitiesSDK;
@@ -41,6 +41,7 @@ import ae.adpolice.gov.network.pojo.response.PrepareSecureChallengeResponse;
 import ae.adpolice.gov.users.UserSession;
 import ae.adpolice.gov.utils.UIUtils;
 import ae.adpolice.gov.utils.Utils;
+import ae.adpolice.gov.utils.Crashlytics;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -61,13 +62,11 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btnReject:
-                askAuthentication("NOK");
-                break;
-            case R.id.btnApproval:
-                askAuthentication("OK");
-                break;
+        int id = v.getId();
+        if (id == R.id.btnReject) {
+            askAuthentication("NOK");
+        } else if (id == R.id.btnApproval) {
+            askAuthentication("OK");
         }
     }
 
@@ -96,38 +95,32 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
             editNameDialog.show(fm, "fragment_validate");
             return;
         }
-        BiometricSensorSDKDialogParams.Builder dialogParamsBuilder = new BiometricSensorSDKDialogParams.Builder(HandleFCMNotificationActivity.this);
-        dialogParamsBuilder.useIcon(true);
-        try {
-            dialogParamsBuilder.setIconName("ic_fingerprint_new");
-        } catch (BiometricSensorSDKException e) {
-            Crashlytics.logException(e);
-        }
+        BiometricSensorSDKParams.Builder dialogParamsBuilder = new BiometricSensorSDKParams.Builder();
         try {
             // Start the fingerprint authentication using dialog.
-            BiometricSensorSDK.verifyUserFingerprint(new BiometricSensorSDKListener() {
+            BiometricSensorSDK.verifyUserBiometry(new BiometricSensorSDKScanListener() {
                 @Override
-                public void onFingerprintScanFailed(int i, String s) {
+                public void onBiometryScanFailed(int i, String s) {
 
                 }
 
                 @Override
-                public void onFingerprintScanError(int i, String s) {
+                public void onBiometryScanError(int i, String s) {
 
                 }
 
                 @Override
-                public void onFingerprintScanSucceeded() {
+                public void onBiometryScanSucceeded() {
                     provideDecisionToServer(consent, "");
                 }
 
                 @Override
-                public void onFingerprintScanCancelled() {
+                public void onBiometryScanCancelled() {
 
                 }
 
                 @Override
-                public void onFingerprintFallbackCalled() {
+                public void onBiometryNegativeButtonClicked() {
 
                 }
             }, HandleFCMNotificationActivity.this, dialogParamsBuilder.create());
@@ -136,6 +129,15 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
         }
 
     }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Stop the current biometric authentication and dismiss the prompt if one is launched.
+        BiometricSensorSDK.stopUserBiometryVerification();
+    }
+
 
     private void openMainScreen() {
         if (dialog != null)
@@ -151,7 +153,7 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
 
     private void provideDecisionToServer(final String yesNo, final String pin) {
         dialog = UIUtils.displayProgress(HandleFCMNotificationActivity.this, "Submitting response, Please wait");
-        if(UserSession.getInstance(HandleFCMNotificationActivity.this).getSecureStorage()==null){
+        if (UserSession.getInstance(HandleFCMNotificationActivity.this).getSecureStorage() == null) {
             UserSession.getInstance(HandleFCMNotificationActivity.this).init(getApplicationContext());
         }
         final byte[] dynamicVector =
@@ -191,7 +193,7 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
         RetrofitClient.getOneSpanServices().getPreparedSecureChallenge(Constants.getAuthorization(),
                 prepareSecureChallengeRequest).enqueue(new Callback<PrepareSecureChallengeResponse>() {
             @Override
-            public void onResponse(Call<PrepareSecureChallengeResponse> call, Response<PrepareSecureChallengeResponse> response) {
+            public void onResponse(@NonNull Call<PrepareSecureChallengeResponse> call, @NonNull Response<PrepareSecureChallengeResponse> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(HandleFCMNotificationActivity.this, "Notification Expired.", Toast.LENGTH_SHORT).show();
                     openMainScreen();
@@ -247,7 +249,7 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
                     authUserRequest.setSignature(generationResponse.getResponse());
                     RetrofitClient.getOneSpanServices().authUser(Constants.getAuthorization(), authUserRequest).enqueue(new Callback<AuthUserResponse>() {
                         @Override
-                        public void onResponse(Call<AuthUserResponse> call, Response<AuthUserResponse> response) {
+                        public void onResponse(@NonNull Call<AuthUserResponse> call, @NonNull Response<AuthUserResponse> response) {
                             if (response.isSuccessful()) {
                                 if ((response.body() != null ? response.body().getResultCodes().getReturnCode() : -101) == 0) {
                                     Toast.makeText(HandleFCMNotificationActivity.this, "Windows Logon Request has been Approved.", Toast.LENGTH_SHORT).show();
@@ -260,7 +262,7 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
                         }
 
                         @Override
-                        public void onFailure(Call<AuthUserResponse> call, Throwable t) {
+                        public void onFailure(@NonNull Call<AuthUserResponse> call, @NonNull Throwable t) {
                             Crashlytics.logException(t);
                             openMainScreen();
                         }
@@ -280,7 +282,7 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
                     cancelAuthUserRequest.setSerialNumber(serialNumber);
                     RetrofitClient.getOneSpanServices().cancelAuthUser(Constants.getAuthorization(), cancelAuthUserRequest).enqueue(new Callback<CancelAuthUserResponse>() {
                         @Override
-                        public void onResponse(Call<CancelAuthUserResponse> call, Response<CancelAuthUserResponse> response) {
+                        public void onResponse(@NonNull Call<CancelAuthUserResponse> call, @NonNull Response<CancelAuthUserResponse> response) {
                             if (response.isSuccessful()) {
                                 if (response.body() == null) {
                                     Toast.makeText(HandleFCMNotificationActivity.this, "Windows Logon Request reponse submission failed.", Toast.LENGTH_SHORT).show();
@@ -297,7 +299,7 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
                         }
 
                         @Override
-                        public void onFailure(Call<CancelAuthUserResponse> call, Throwable t) {
+                        public void onFailure(@NonNull Call<CancelAuthUserResponse> call, @NonNull Throwable t) {
                             Crashlytics.logException(t);
                             openMainScreen();
                         }
@@ -306,7 +308,7 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
             }
 
             @Override
-            public void onFailure(Call<PrepareSecureChallengeResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<PrepareSecureChallengeResponse> call, @NonNull Throwable t) {
                 Crashlytics.logException(t);
                 openMainScreen();
             }
@@ -326,7 +328,7 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
         try {
             // Check if the intent is a notification
             if (NotificationSDKClient.isVASCONotification(intent)) {
-                if(Utils.getInstance().getSecureCache()==null){
+                if (Utils.getInstance().getSecureCache() == null) {
                     Utils.getInstance().initSecureCache(HandleFCMNotificationActivity.this);
                 }
 

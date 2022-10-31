@@ -1,8 +1,5 @@
 package ae.adpolice.gov.network;
 
-import com.crashlytics.android.Crashlytics;
-
-import java.security.cert.CertificateException;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -12,6 +9,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import ae.adpolice.gov.BuildConfig;
+import ae.adpolice.gov.utils.Crashlytics;
 import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -21,7 +19,7 @@ public class RetrofitClient {
 
     private static Retrofit retrofit;
 
-    private static  OneSpanServices oneSpanServices;
+    private static OneSpanServices oneSpanServices;
 
     private static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
@@ -37,7 +35,7 @@ public class RetrofitClient {
     private static OkHttpClient getUnsafeOkHttpClient() {
         try {
             // Create a trust manager that does not validate certificate chains
-            final TrustManager[] trustAllCerts = new TrustManager[] {
+            final TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
                         @Override
                         public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
@@ -79,11 +77,11 @@ public class RetrofitClient {
         }
     }
 
-    public static OneSpanServices getOneSpanServices(){
-        if(oneSpanServices ==null){
-             oneSpanServices = getRetrofitInstance().create(OneSpanServices.class);
+    public static OneSpanServices getOneSpanServices() {
+        if (oneSpanServices == null) {
+            oneSpanServices = getRetrofitInstance().create(OneSpanServices.class);
         }
-        return  oneSpanServices;
+        return oneSpanServices;
     }
 
 

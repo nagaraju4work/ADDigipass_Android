@@ -31,9 +31,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.vasco.digipass.sdk.DigipassSDK;
 import com.vasco.digipass.sdk.DigipassSDKConstants;
 import com.vasco.digipass.sdk.DigipassSDKReturnCodes;
@@ -41,10 +41,10 @@ import com.vasco.digipass.sdk.responses.DigipassPropertiesResponse;
 import com.vasco.digipass.sdk.responses.GenerationResponse;
 import com.vasco.digipass.sdk.responses.SecureChannelGenerateResponse;
 import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDK;
-import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDKDialogParams;
 import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDKErrorCodes;
 import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDKException;
-import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDKListener;
+import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDKParams;
+import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDKScanListener;
 import com.vasco.digipass.sdk.utils.geolocation.GeolocationSDK;
 import com.vasco.digipass.sdk.utils.geolocation.GeolocationSDKException;
 import com.vasco.digipass.sdk.utils.notification.client.NotificationSDKClient;
@@ -67,6 +67,7 @@ import ae.adpolice.gov.network.pojo.response.ServerTimeResponse;
 import ae.adpolice.gov.users.UserSession;
 import ae.adpolice.gov.users.pojo.User;
 import ae.adpolice.gov.utils.ActivationCallback;
+import ae.adpolice.gov.utils.Crashlytics;
 import ae.adpolice.gov.utils.DSAPPUserActivation;
 import ae.adpolice.gov.utils.UIUtils;
 import ae.adpolice.gov.utils.Utils;
@@ -116,6 +117,12 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        findViewById(R.id.imageView5).setOnClickListener(v -> {
+            Bundle b = new Bundle();
+            b.putString("platform","Android");
+            FirebaseAnalytics.getInstance(MainActivity.this).logEvent("Crash_button_clicked",b);
+            throw new RuntimeException("Crashed!");
+        });
         progressBar = findViewById(R.id.progressBar);
         progressBar.setMax(SECONDS);
         drawer = findViewById(R.id.drawer_layout);
@@ -143,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements
             findViewById(R.id.ivDrawer).setVisibility(View.INVISIBLE);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         } else {
-            tvSubHeaderTitle.setText("Select User: ");
+            tvSubHeaderTitle.setText(getString(R.string.select_user));
             userSpinner.setVisibility(View.VISIBLE);
             findViewById(R.id.ivDrawer).setVisibility(View.VISIBLE);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -221,38 +228,32 @@ public class MainActivity extends AppCompatActivity implements
                     editNameDialog.show(fm, "fragment_validate");
                     return;
                 }
-                BiometricSensorSDKDialogParams.Builder dialogParamsBuilder = new BiometricSensorSDKDialogParams.Builder(MainActivity.this);
-                dialogParamsBuilder.useIcon(true);
-                try {
-                    dialogParamsBuilder.setIconName("ic_fingerprint_new");
-                } catch (BiometricSensorSDKException e) {
-                    Crashlytics.logException(e);
-                }
+                BiometricSensorSDKParams.Builder dialogParamsBuilder = new BiometricSensorSDKParams.Builder();
                 try {
                     // Start the fingerprint authentication using dialog.
-                    BiometricSensorSDK.verifyUserFingerprint(new BiometricSensorSDKListener() {
+                    BiometricSensorSDK.verifyUserBiometry(new BiometricSensorSDKScanListener() {
                         @Override
-                        public void onFingerprintScanFailed(int i, String s) {
+                        public void onBiometryScanFailed(int i, String s) {
 
                         }
 
                         @Override
-                        public void onFingerprintScanError(int i, String s) {
+                        public void onBiometryScanError(int i, String s) {
 
                         }
 
                         @Override
-                        public void onFingerprintScanSucceeded() {
+                        public void onBiometryScanSucceeded() {
                             generateOTP("");
                         }
 
                         @Override
-                        public void onFingerprintScanCancelled() {
+                        public void onBiometryScanCancelled() {
 
                         }
 
                         @Override
-                        public void onFingerprintFallbackCalled() {
+                        public void onBiometryNegativeButtonClicked() {
 
                         }
                     }, MainActivity.this, dialogParamsBuilder.create());
@@ -274,11 +275,6 @@ public class MainActivity extends AppCompatActivity implements
         });
         registerVascoSDK();
         resetMenuItems();
-        // Unsubtly ask for permissions
-//        if (!hasPermission(android.Manifest.permission.READ_PHONE_STATE)) {
-//            requestPermission(android.Manifest.permission.READ_PHONE_STATE);
-//            return;
-//        }
         RetrofitClient.getOneSpanServices().getServerTime(Constants.getAuthorization())
                 .enqueue(new Callback<ServerTimeResponse>() {
                     @Override
@@ -448,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements
         findViewById(R.id.ivRefresh).setVisibility(View.VISIBLE);
     }
 
-
+    @SuppressWarnings("unchecked")
     @Override
     protected void onResume() {
         super.onResume();
@@ -561,7 +557,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void generateOTP(String pin) {
         Dialog otpDialog = UIUtils.displayProgress(MainActivity.this, "Generating OTP");
-        GenerationResponse generateResponse ;
+        GenerationResponse generateResponse;
         byte[] dynamicVector = UserSession.getInstance(MainActivity.this).getDynamicVector();
         generateResponse = DigipassSDK.generateResponseOnly(
                 UserSession.getInstance(MainActivity.this).getStaticVector(UserSession.getInstance(MainActivity.this).getCurrentUser().getUserId()),
@@ -680,41 +676,14 @@ public class MainActivity extends AppCompatActivity implements
 
                     String credentials = new String(tmp);
                     String[] values = credentials.split(Utils.STRING_SPLIT_CHARACTER);
-                    if(values.length<=1){
+                    if (values.length <= 1) {
                         values = credentials.split(Utils.STRING_ALTERNATE_SPLIT_CHARACTER);
-                        if(values.length<=1) {
+                        if (values.length <= 1) {
                             Toast.makeText(this, "Registration process is failed due to wrong Cronto input code.", Toast.LENGTH_SHORT).show();
                             return;
                         }
                     }
                     Utils.getInstance().putStringInSecureCache(Constants.CREDENTIALS_KEY, credentials);
-                    String userId;
-                    String[] activationPasswords;
-                    String[] registrationIdentifiers;
-
-
-                    userId = values[0];
-                    try {
-                        if (BiometricSensorSDK.isUserBiometrySupportedByPlatform(MainActivity.this)) {
-                            activationPasswords = new String[2];
-                            activationPasswords[0] = values[2];
-                            activationPasswords[1] = values[4];
-                            registrationIdentifiers = new String[2];
-                            registrationIdentifiers[0] = values[1];
-                            registrationIdentifiers[1] = values[3];
-                        } else {
-                            activationPasswords = new String[1];
-                            activationPasswords[0] = values[2];
-                            registrationIdentifiers = new String[1];
-                            registrationIdentifiers[0] = values[1];
-                        }
-                    } catch (BiometricSensorSDKException e) {
-                        Crashlytics.logException(e);
-                        activationPasswords = new String[1];
-                        activationPasswords[0] = values[2];
-                        registrationIdentifiers = new String[1];
-                        registrationIdentifiers[0] = values[1];
-                    }
                     startRegistration();
 
                 } else if (codeType == QRCodeScannerSDKConstants.QR_CODE) {
@@ -770,61 +739,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    /**
-     * Converts a hexadecimal string to a bytes array.
-     *
-     * @param str Hexadecimal string to convert
-     * @return A bytes array or null if the given string is null
-     */
-    private static byte[] hexaToBytes(String str) {
-        if (str == null) {
-            return null;
-        }
-        byte[] result = new byte[str.length() / 2];
-        char[] strChars = str.toCharArray();
-        char c;
-        byte t;
-        for (int i = 0; i < result.length; i++) {
-
-            // First character
-            c = strChars[i * 2];
-            t = charToByte(c);
-            result[i] = (byte) (t * 0x10);
-
-            // Second character
-            c = strChars[i * 2 + 1];
-            t = charToByte(c);
-            result[i] += t;
-
-        }
-        return result;
-    }
-
-    /**
-     * Converts a char to a byte
-     *
-     * @param c Char to convert
-     * @return Converted byte
-     */
-    private static byte charToByte(char c) {
-        byte result;
-        if (c >= 'a') {
-            result = (byte) (c - 'a' + 0x0A);
-        } else if (c >= 'A') {
-            result = (byte) (c - 'A' + 0x0A);
-        } else {
-            result = (byte) (c - '0');
-        }
-        return result;
-    }
-
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-//            this.moveTaskToBack(true);
-//            return true;
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
 
     private CountDownTimer countDownTimer;
 
@@ -839,18 +753,6 @@ public class MainActivity extends AppCompatActivity implements
                 Toast.makeText(MainActivity.this, getResources().getString(R.string.internal_error), Toast.LENGTH_LONG).show();
                 break;
 
-            case BiometricSensorSDKErrorCodes.DIALOG_PARAM_INVALID:
-                Utils.Log(TAG, "The dialog parameter is invalid " + e.getLocalizedMessage());
-                Toast.makeText(MainActivity.this, getResources().getString(R.string.dialog_parameter_invalid),
-                        Toast.LENGTH_LONG).show();
-                break;
-
-            case BiometricSensorSDKErrorCodes.DIALOG_PARAMS_NULL:
-                Utils.Log(TAG, "The dialog parameters object is null" + e.getLocalizedMessage());
-                Toast.makeText(MainActivity.this, getResources().getString(R.string.biometric_sensor_dialog_params_null),
-                        Toast.LENGTH_LONG).show();
-                break;
-
             case BiometricSensorSDKErrorCodes.ACTIVITY_NULL:
                 Utils.Log(TAG, "The activity is null" + e.getLocalizedMessage());
                 Toast.makeText(MainActivity.this, getResources().getString(R.string.activity_null), Toast.LENGTH_LONG).show();
@@ -862,26 +764,12 @@ public class MainActivity extends AppCompatActivity implements
                         Toast.LENGTH_LONG).show();
                 break;
 
-            case BiometricSensorSDKErrorCodes.FINGERPRINT_NOT_USABLE:
+            case BiometricSensorSDKErrorCodes.NO_BIOMETRY_ENROLLED:
                 Utils.Log(TAG, "Fingerprint is not supported by the device or there is no registered fingerprint " + e.getLocalizedMessage());
                 Toast.makeText(MainActivity.this,
                         getResources().getString(R.string.fingerprint_not_usable),
                         Toast.LENGTH_LONG).show();
                 break;
-
-            case BiometricSensorSDKErrorCodes.PERMISSION_DENIED:
-                Utils.Log(TAG, "Fingerprint permission was not granted to the application " + e.getLocalizedMessage());
-                Toast.makeText(MainActivity.this,
-                        getResources().getString(R.string.permission_denied), Toast.LENGTH_LONG).show();
-                break;
-
-            case BiometricSensorSDKErrorCodes.SCAN_ALREADY_RUNNING:
-                Utils.Log(TAG, "A fingerprint scan is already running" + e.getLocalizedMessage());
-                Toast.makeText(MainActivity.this,
-                        getResources().getString(R.string.scan_already_running),
-                        Toast.LENGTH_LONG).show();
-                break;
-
             default:
                 Utils.Log(TAG, "Unknown error " + e.getLocalizedMessage());
                 Toast.makeText(MainActivity.this,

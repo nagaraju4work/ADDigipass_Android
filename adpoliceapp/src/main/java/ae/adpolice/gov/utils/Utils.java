@@ -3,7 +3,6 @@ package ae.adpolice.gov.utils;
 import android.content.Context;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
 import com.vasco.digipass.sdk.utils.securestorage.SecureStorageSDK;
 import com.vasco.digipass.sdk.utils.securestorage.SecureStorageSDKException;
 import com.vasco.digipass.sdk.utils.utilities.UtilitiesSDK;

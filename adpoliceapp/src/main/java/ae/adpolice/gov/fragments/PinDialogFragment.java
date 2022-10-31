@@ -78,7 +78,7 @@ public class PinDialogFragment extends DialogFragment {
         numberKeyboard.setListener(new NumberKeyboardListener() {
             @Override
             public void onNumberClicked(int number) {
-                mPinView.setText(String.format(Locale.getDefault(),"%s%d", Objects.requireNonNull(mPinView.getText()).toString(), number));
+                mPinView.setText(String.format(Locale.getDefault(),"%s%d", Objects.requireNonNull(mPinView.getText()), number));
             }
 
             @Override
@@ -88,20 +88,16 @@ public class PinDialogFragment extends DialogFragment {
             @Override
             public void onRightAuxButtonClicked() {
                 if(Objects.requireNonNull(mPinView.getText()).length()>0) {
-                    mPinView.setText(String.format(Locale.getDefault(), "%s", Objects.requireNonNull(mPinView.getText()).subSequence(0, mPinView.getText().length() - 1).toString()));
+                    mPinView.setText(String.format(Locale.getDefault(), "%s", Objects.requireNonNull(mPinView.getText()).subSequence(0, mPinView.getText().length() - 1)));
                 }
             }
         });
         if (description != null)
             ((TextView) view.findViewById(R.id.tvEnterPinMsg)).setText(description);
-        view.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                dismiss();
-                if (onPinSetListener != null)
-                    getOnPinSetListener().onPinSetFailed();
-            }
+        view.findViewById(R.id.button).setOnClickListener(v -> {
+            dismiss();
+            if (onPinSetListener != null)
+                getOnPinSetListener().onPinSetFailed();
         });
         mPinView.addTextChangedListener(new TextWatcher() {
             @Override

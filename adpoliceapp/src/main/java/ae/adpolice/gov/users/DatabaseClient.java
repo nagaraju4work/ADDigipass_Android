@@ -8,7 +8,7 @@ public class DatabaseClient {
     private static DatabaseClient mInstance;
 
     //our app database object
-    private AppDatabase appDatabase;
+    private final AppDatabase appDatabase;
 
     private DatabaseClient(Context mCtx) {
 

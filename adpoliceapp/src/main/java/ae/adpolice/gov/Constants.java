@@ -1,25 +1,18 @@
 package ae.adpolice.gov;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Base64;
-import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
-import com.vasco.digipass.sdk.DigipassSDK;
-import com.vasco.digipass.sdk.DigipassSDKReturnCodes;
-import com.vasco.digipass.sdk.models.SecureChannelMessage;
-import com.vasco.digipass.sdk.responses.SecureChannelParseResponse;
-import com.vasco.digipass.sdk.utils.devicebinding.DeviceBindingSDK;
+import com.vasco.digipass.sdk.utils.devicebinding.DeviceBinding;
 import com.vasco.digipass.sdk.utils.devicebinding.DeviceBindingSDKException;
-import com.vasco.digipass.sdk.utils.devicebinding.DeviceBindingSDKParams;
 import com.vasco.digipass.sdk.utils.utilities.UtilitiesSDK;
 import com.vasco.digipass.sdk.utils.wbc.WBCSDK;
 import com.vasco.digipass.sdk.utils.wbc.WBCSDKConstants;
 import com.vasco.digipass.sdk.utils.wbc.WBCSDKException;
 import com.vasco.digipass.sdk.utils.wbc.WBCSDKTables;
 
+import ae.adpolice.gov.utils.Crashlytics;
 import ae.adpolice.gov.utils.Utils;
 import ae.adpolice.gov.wbc.tables.WBCSDKTablesImpl;
 
@@ -32,8 +25,8 @@ public class Constants {
 
     // Salts used to diversify the protection mechanisms for sensitive features.
     // TODO: Paste here two different random strings of 64 hexadecimal characters.
-//    public static final String SALT_STORAGE = "4F63F620263C91CF32998AA54D57DEDF333CD4D7F9D1DB362731DACFD1F14A21";
-//    public static final String SALT_DIGIPASS = "EE738691D84DFF18FB373E9D846C4575F42073A2A1AD5B0890DCD871BFFE526C";
+    //  TODO:   public static final String SALT_STORAGE = "4F63F620263C91CF32998AA54D57DEDF333CD4D7F9D1DB362731DACFD1F14A21";
+    //  TODO:   public static final String SALT_DIGIPASS = "EE738691D84DFF18FB373E9D846C4575F42073A2A1AD5B0890DCD871BFFE526C";
 
     public static String getAuthorization() {
         return "Basic " + Base64.encodeToString((BuildConfig.API_KEY + ":").getBytes(), Base64.NO_WRAP);
@@ -41,25 +34,21 @@ public class Constants {
     }
 
     public static String getDevicePlatformFingerprintForDigipass(Context context) {
-        final DeviceBindingSDKParams params = new DeviceBindingSDKParams(Constants.SALT_DIGIPASS, context);
-        params.useAndroidId(true);
         try {
-            return DeviceBindingSDK.getFingerprint(params);
+            return DeviceBinding.createDeviceBinding(context, DeviceBinding.FingerprintType.ANDROID_ID).fingerprint(Constants.SALT_DIGIPASS);
         } catch (DeviceBindingSDKException e) {
             Crashlytics.logException(e);
         }
         return "";
     }
 
-    public static boolean isSaltStorageEmpty(){
+    public static boolean isSaltStorageEmpty() {
         return SALT_STORAGE.isEmpty();
     }
 
     public static String getDevicePlatformFingerprintForStorage(Context context) {
-        final DeviceBindingSDKParams params = new DeviceBindingSDKParams(Constants.SALT_STORAGE, context);
-        params.useAndroidId(true);
         try {
-            return DeviceBindingSDK.getFingerprint(params);
+            return DeviceBinding.createDeviceBinding(context, DeviceBinding.FingerprintType.ANDROID_ID).fingerprint(Constants.SALT_STORAGE);
         } catch (DeviceBindingSDKException e) {
             Crashlytics.logException(e);
         }
@@ -79,18 +68,6 @@ public class Constants {
     //underscores can't be used for Secure Storage keys
     public static String getDynamicVectorBioKey(String userId) {
         return userId + "dvbio";
-    }
-
-    public SecureChannelMessage parseIt(Activity mContext, String toParse) {
-        SecureChannelParseResponse scpr = DigipassSDK.parseSecureChannelMessage(toParse);
-        //TODO modify the method and use this method for parse messages
-        // ALWAYS CHECK THE RETURN CODE !
-        if (scpr.getReturnCode() != DigipassSDKReturnCodes.SUCCESS) {
-            Toast.makeText(mContext, "" + DigipassSDK.getMessageForReturnCode(scpr.getReturnCode()), Toast.LENGTH_SHORT).show();
-            Crashlytics.logException(scpr.getCause());
-            return null;
-        }
-        return scpr.getMessage();
     }
 
 

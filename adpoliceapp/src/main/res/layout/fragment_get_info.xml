@@ -1,117 +1,111 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="start"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_vertical_margin"
     tools:context="ae.adpolice.gov.GetInfoFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="start"
-        android:orientation="vertical"
-        android:padding="@dimen/activity_vertical_margin">
+    <TextView
+        android:id="@+id/label_get_info_userIdentifier"
+        style="@android:style/TextAppearance.DeviceDefault.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_user_identifier" />
 
-        <TextView
-            android:id="@+id/label_get_info_userIdentifier"
-            style="@android:style/TextAppearance.DeviceDefault.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_user_identifier" />
+    <TextView
+        android:id="@+id/text_get_info_userIdentifier"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:text=""
+        android:textColor="@color/colorPrimaryText" />
 
-        <TextView
-            android:id="@+id/text_get_info_userIdentifier"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:textColor="@color/colorPrimaryText"
-            android:text="" />
+    <TextView
+        android:id="@+id/label_get_info_digipassSerialNumber"
+        style="@android:style/TextAppearance.DeviceDefault.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/digipass_serial_number" />
 
-        <TextView
-            android:id="@+id/label_get_info_digipassSerialNumber"
-            style="@android:style/TextAppearance.DeviceDefault.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="DIGIPASS Serial number" />
+    <TextView
+        android:id="@+id/text_get_info_digipassSerialNumber"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:text=""
+        android:textColor="@color/colorPrimaryText" />
 
-        <TextView
-            android:id="@+id/text_get_info_digipassSerialNumber"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:textColor="@color/colorPrimaryText"
-            android:text="" />
+    <TextView
+        android:id="@+id/label_get_info_digipassSequenceNumberUnprotected"
+        style="@android:style/TextAppearance.DeviceDefault.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/digipass_sequence_number" />
 
-        <TextView
-            android:id="@+id/label_get_info_digipassSequenceNumberUnprotected"
-            style="@android:style/TextAppearance.DeviceDefault.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="DIGIPASS Sequence number" />
+    <TextView
+        android:id="@+id/text_get_info_digipassSequenceNumberUnprotected"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:text=""
+        android:textColor="@color/colorPrimaryText" />
 
-        <TextView
-            android:id="@+id/text_get_info_digipassSequenceNumberUnprotected"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:textColor="@color/colorPrimaryText"
-            android:text="" />
+    <!--        <TextView-->
+    <!--            android:id="@+id/label_get_info_digipassSequenceNumberProtected"-->
+    <!--            style="@android:style/TextAppearance.DeviceDefault.Small"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginTop="@dimen/activity_vertical_margin"-->
+    <!--            android:text="DIGIPASS Sequence number protected" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/label_get_info_digipassSequenceNumberProtected"-->
-<!--            style="@android:style/TextAppearance.DeviceDefault.Small"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="@dimen/activity_vertical_margin"-->
-<!--            android:text="DIGIPASS Sequence number protected" />-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/text_get_info_digipassSequenceNumberProtected"-->
+    <!--            style="@android:style/TextAppearance.DeviceDefault.Medium"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+    <!--            android:textColor="@color/colorPrimaryText"-->
+    <!--            android:text="" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/text_get_info_digipassSequenceNumberProtected"-->
-<!--            style="@android:style/TextAppearance.DeviceDefault.Medium"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
-<!--            android:textColor="@color/colorPrimaryText"-->
-<!--            android:text="" />-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/label_get_info_usedTimeSeconds"-->
+    <!--            style="@android:style/TextAppearance.DeviceDefault.Small"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginTop="@dimen/activity_vertical_margin"-->
+    <!--            android:text="Used time" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/label_get_info_usedTimeSeconds"-->
-<!--            style="@android:style/TextAppearance.DeviceDefault.Small"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="@dimen/activity_vertical_margin"-->
-<!--            android:text="Used time" />-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/text_get_info_usedTimeSeconds"-->
+    <!--            style="@android:style/TextAppearance.DeviceDefault.Medium"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+    <!--            android:textColor="@color/colorPrimaryText"-->
+    <!--            android:text="" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/text_get_info_usedTimeSeconds"-->
-<!--            style="@android:style/TextAppearance.DeviceDefault.Medium"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
-<!--            android:textColor="@color/colorPrimaryText"-->
-<!--            android:text="" />-->
+    <TextView
+        android:id="@+id/label_get_info_clientServerTimeShiftSeconds"
+        style="@android:style/TextAppearance.DeviceDefault.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/client_time_shift" />
 
-        <TextView
-            android:id="@+id/label_get_info_clientServerTimeShiftSeconds"
-            style="@android:style/TextAppearance.DeviceDefault.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="Client server time shift (sec)" />
+    <TextView
+        android:id="@+id/text_get_info_clientServerTimeShiftSeconds"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:text=""
+        android:textColor="@color/colorPrimaryText" />
 
-        <TextView
-            android:id="@+id/text_get_info_clientServerTimeShiftSeconds"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:textColor="@color/colorPrimaryText"
-            android:text="" />
-
-    </LinearLayout>
-
-</FrameLayout>
+</LinearLayout>

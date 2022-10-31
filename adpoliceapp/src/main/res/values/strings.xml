@@ -199,7 +199,7 @@
     <string name="unknown_error">Unknown error</string>
     <string name="notification_title">Notification from Digipass</string>
     <string name="set_pin_for_authentication">Set Authentication PIN to complete Activation</string>
-    <string name="cancel">CANCEL</string>
+    <string name="cancel">Cancel</string>
     <string name="confirm_pin">Confirm Authentication PIN to complete Activation</string>
     <string name="pin_not_match">Incorrect PIN. %d attempt(s) left.</string>
     <string name="enter_your_pin">Enter PIN</string>
@@ -211,4 +211,16 @@
 
     <string name="new_fingerprint_enrolled_description">A new fingerprint was added to this device, so your PIN is required.</string>
     <string name="hi_guest">Hi, Guest</string>
+    <string name="select_user">"Select User: "</string>
+    <string name="protection">Protection</string>
+    <string name="face_recognition">Face recognition</string>
+    <string name="biometric_authentication">Biometric Authentication</string>
+    <string name="pin">PIN</string>
+    <string name="activate">Activate</string>
+    <string name="enrol_your_face">Enroll your face</string>
+    <string name="change_pin">Change your PIN</string>
+    <string name="deactivate">Deactivate</string>
+    <string name="digipass_serial_number">DIGIPASS Serial number</string>
+    <string name="digipass_sequence_number">DIGIPASS Sequence number</string>
+    <string name="client_time_shift">Client server time shift (sec)</string>
 </resources>

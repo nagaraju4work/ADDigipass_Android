@@ -2,10 +2,10 @@ package ae.adpolice.gov.utils;
 
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
-import com.crashlytics.android.Crashlytics;
 import com.vasco.digipass.sdk.DigipassSDK;
 import com.vasco.digipass.sdk.DigipassSDKConstants;
 import com.vasco.digipass.sdk.DigipassSDKReturnCodes;
@@ -19,7 +19,6 @@ import com.vasco.dsapp.client.responses.SRPClientEphemeralKeyResponse;
 import com.vasco.dsapp.client.responses.SRPSessionKeyResponse;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 import ae.adpolice.gov.Constants;
@@ -168,7 +167,7 @@ public class DSAPPUserActivation {
                 .generateServerEphemeralKey(Constants.getAuthorization(), serverEphemeralKeyRequest)
                 .enqueue(new Callback<GenerateServerEphemeralKeyResponse>() {
                     @Override
-                    public void onResponse(Call<GenerateServerEphemeralKeyResponse> call, Response<GenerateServerEphemeralKeyResponse> response) {
+                    public void onResponse(@NonNull Call<GenerateServerEphemeralKeyResponse> call, @NonNull Response<GenerateServerEphemeralKeyResponse> response) {
                         if (!response.isSuccessful() || response.body() == null) {
                             if (response.code() == 401) {
                                 activationCallback.onActivationFailure("Unauthorized Request");
@@ -188,7 +187,7 @@ public class DSAPPUserActivation {
                         final String serverEphemeralPublicKey = response.body().getResult().getServerEphemeralPublicKey();
                         final String salt = response.body().getResult().getSalt();
                         Utils.Log("DSAPPUserActivation", "Sample generateSRPSessionKey");
-                        SRPSessionKeyResponse clientSessionKeyResponse = null;
+                        SRPSessionKeyResponse clientSessionKeyResponse;
                         try {
                             clientSessionKeyResponse = DSAPPClient.generateSRPSessionKey(
                                     clientEphemeralPublicKey, clientEphemeralPrivateKey, serverEphemeralPublicKey, getInstance(mContext).getRegistrationIdentifier()[getIteration()], password,
@@ -213,7 +212,7 @@ public class DSAPPUserActivation {
                     }
 
                     @Override
-                    public void onFailure(Call<GenerateServerEphemeralKeyResponse> call, Throwable t) {
+                    public void onFailure(@NonNull Call<GenerateServerEphemeralKeyResponse> call, @NonNull Throwable t) {
                         Crashlytics.logException(t);
                         if (activationCallback != null) {
                             activationCallback.onActivationFailure("GenerateServerEphemeralKeyResponse Failed");
@@ -225,8 +224,6 @@ public class DSAPPUserActivation {
     /**
      * Example of use of {DSAPPClient.verifySRPServerEvidenceMessage}
      *
-     * @param srpClientEphemeralKeyResponse
-     * @param srpSessionKeyResponse
      */
     private void verifySRPServerEvidenceMessage(SRPClientEphemeralKeyResponse srpClientEphemeralKeyResponse, final SRPSessionKeyResponse srpSessionKeyResponse) {
         // The verifySRPServerEvidenceMessage method of DSAPP
@@ -242,10 +239,11 @@ public class DSAPPUserActivation {
         RetrofitClient.getOneSpanServices().generateActivationData(Constants.getAuthorization(), generateActivateDataRequest)
                 .enqueue(new Callback<GenerateActivationDataResponse>() {
                     @Override
-                    public void onResponse(Call<GenerateActivationDataResponse> call, Response<GenerateActivationDataResponse> response) {
+                    public void onResponse(@NonNull Call<GenerateActivationDataResponse> call, @NonNull Response<GenerateActivationDataResponse> response) {
                         if (!response.isSuccessful()) {
                             if (activationCallback != null) {
                                 try {
+                                    assert response.errorBody() != null;
                                     activationCallback.onActivationFailure("Response failed " + response.errorBody().string());
                                 } catch (IOException e) {
                                     Crashlytics.logException(e);
@@ -283,7 +281,7 @@ public class DSAPPUserActivation {
                     }
 
                     @Override
-                    public void onFailure(Call<GenerateActivationDataResponse> call, Throwable t) {
+                    public void onFailure(@NonNull Call<GenerateActivationDataResponse> call, @NonNull Throwable t) {
                         if (activationCallback != null) {
                             activationCallback.onActivationFailure("An error has occurred with GenerateActivationDataResponse");
                         }
@@ -296,8 +294,6 @@ public class DSAPPUserActivation {
     /**
      * Example of use of {DSAPPClient.decryptSRPData}
      *
-     * @param srpSessionKeyResponse
-     * @param generateActivationDataResponse
      */
     private void decryptSRPData(SRPSessionKeyResponse srpSessionKeyResponse, final GenerateActivationDataResponse generateActivationDataResponse) {
 
@@ -343,9 +339,10 @@ public class DSAPPUserActivation {
             RetrofitClient.getOneSpanServices().addDevice(Constants.getAuthorization(), addDeviceRequest)
                     .enqueue(new Callback<AddDeviceResponse>() {
                         @Override
-                        public void onResponse(Call<AddDeviceResponse> call, Response<AddDeviceResponse> response) {
+                        public void onResponse(@NonNull Call<AddDeviceResponse> call, @NonNull Response<AddDeviceResponse> response) {
                             if (!response.isSuccessful()) {
                                 try {
+                                    assert response.errorBody() != null;
                                     activationCallback.onActivationFailure("Response Failed. " + response.errorBody().string());
                                 } catch (IOException e) {
                                     Crashlytics.logException(e);
@@ -354,6 +351,7 @@ public class DSAPPUserActivation {
                             }
                             //send to Server MDL add device
                             //s
+                            assert response.body() != null;
                             final SecureChannelParseResponse secureChannelParseResponse1 = DigipassSDK
                                     .parseSecureChannelMessage(response.body().getResult().getInstanceActivationMessage());
                             if (secureChannelParseResponse1.getReturnCode() != DigipassSDKReturnCodes.SUCCESS) {
@@ -393,7 +391,7 @@ public class DSAPPUserActivation {
                         }
 
                         @Override
-                        public void onFailure(Call<AddDeviceResponse> call, Throwable t) {
+                        public void onFailure(@NonNull Call<AddDeviceResponse> call, @NonNull Throwable t) {
                             Crashlytics.logException(t);
                             if (activationCallback != null) {
                                 activationCallback.onActivationFailure("Add device response is failed.");
@@ -417,7 +415,7 @@ public class DSAPPUserActivation {
     private void continueActivation(final FragmentActivity mContext, final SecureChannelParseResponse secureChannelParseResponse1,
                                     final MultiDeviceLicenseActivationResponse multiDeviceLicenseActivationResponse,
                                     final String pin) {
-        ActivationResponse activationResponse = null;
+        ActivationResponse activationResponse;
         activationResponse = DigipassSDK.multiDeviceActivateInstance(multiDeviceLicenseActivationResponse.getStaticVector(),
                 multiDeviceLicenseActivationResponse.getDynamicVector(), secureChannelParseResponse1.getMessage(),
                 pin, Constants.getDevicePlatformFingerprintForDigipass(mContext));
@@ -452,7 +450,7 @@ public class DSAPPUserActivation {
         RetrofitClient.getOneSpanServices().activateApp(Constants.getAuthorization(), activationRequest)
                 .enqueue(new Callback<AppActivationResponse>() {
                     @Override
-                    public void onResponse(Call<AppActivationResponse> call, Response<AppActivationResponse> response) {
+                    public void onResponse(@NonNull Call<AppActivationResponse> call, @NonNull Response<AppActivationResponse> response) {
                         //Store dynamic vector and static vector to secure storage
                         //store dynamic vector for each request into secure storage
                         // generationResponse.getDynamicVector()
@@ -530,7 +528,7 @@ public class DSAPPUserActivation {
                     }
 
                     @Override
-                    public void onFailure(Call<AppActivationResponse> call, Throwable t) {
+                    public void onFailure(@NonNull Call<AppActivationResponse> call, @NonNull Throwable t) {
                         Crashlytics.logException(t);
                         if (activationCallback != null) {
                             activationCallback.onActivationFailure("Final Activation Failure");
@@ -538,39 +536,6 @@ public class DSAPPUserActivation {
                     }
                 });
         //sent to Server MDL Activate v2
-    }
-
-    /**
-     * Example of use of {DSAPPClient.verifySRPMAC}
-     *
-     * @param sessionKey
-     * @param mac
-     */
-    public static void demoVerifySRPMAC(String sessionKey, String mac) {
-
-        // The verifySRPMAC method of DSAPP
-        // Verifies the MAC of the client's activation response sent by the server.
-
-        try {
-            // final String sessionKey = "A3F850A19C034A190E9C68110102172E2FCC12B78BC6C696FE68CC8B30605333";
-            // In this sample, we use the client's activation response from DIGIPASS for Mobile application.
-            String clientResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-            clientResponse += "<DP4Mobile retCode=\"0\" message=\"Operation Successful\">\n";
-            clientResponse += "</DP4Mobile>";
-            //final String mac = "6BBCD49276F00506D1CF6195192E6A8FD5EB4514CE130A471243D17133A2E8B9";
-
-            // Tries to verify the client's activation response MAC.
-            Utils.Log("DSAPPUserActivation", "Sample verifySRPMAC");
-            DSAPPClient.verifySRPMAC(sessionKey, clientResponse.getBytes(), mac);
-
-            Utils.Log("DSAPPUserActivation", "Client's activation response MAC successfully verified with verifySRPMAC.");
-
-        } catch (DSAPPException e) {
-            Crashlytics.logException(e);
-            Utils.Log("DSAPPUserActivation", "An error has occurred with verifySRPMAC:");
-            Utils.Log("DSAPPUserActivation", "Error code: " + e.getErrorCode());
-            Utils.Log("DSAPPUserActivation", "Message:    " + e.getMessage() + "\n\n");
-        }
     }
 
 }

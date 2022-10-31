@@ -1,7 +1,8 @@
 package ae.adpolice.gov.utils;
 
 
-import com.crashlytics.android.Crashlytics;
+import androidx.annotation.NonNull;
+
 import com.vasco.dsapp.client.DSAPPClient;
 import com.vasco.dsapp.client.exceptions.DSAPPException;
 import com.vasco.dsapp.client.responses.SRPClientEphemeralKeyResponse;
@@ -35,8 +36,9 @@ public class DSAPPUserActivationTests {
                 .generateServerEphemeralKey(Constants.getAuthorization(),serverEphemeralKeyRequest)
                 .enqueue(new Callback<GenerateServerEphemeralKeyResponse>() {
                     @Override
-                    public void onResponse(Call<GenerateServerEphemeralKeyResponse> call, Response<GenerateServerEphemeralKeyResponse> response) {
+                    public void onResponse(@NonNull Call<GenerateServerEphemeralKeyResponse> call, @NonNull Response<GenerateServerEphemeralKeyResponse> response) {
                         try {
+                            assert response.body() != null;
                             final SRPSessionKeyResponse clientSessionKeyResponse = DSAPPClient.generateSRPSessionKey(
                                         clientEphemeralKeyResponse.getClientEphemeralPublicKey(), clientEphemeralKeyResponse.getClientEphemeralPrivateKey(),
                                         response.body().getResult().getServerEphemeralPublicKey(), regid, activationPassword,
@@ -47,8 +49,9 @@ public class DSAPPUserActivationTests {
                             RetrofitClient.getOneSpanServices().generateActivationData(Constants.getAuthorization(),generateActivateDataRequest)
                                     .enqueue(new Callback<GenerateActivationDataResponse>() {
                                         @Override
-                                        public void onResponse(Call<GenerateActivationDataResponse> call, Response<GenerateActivationDataResponse> response) {
+                                        public void onResponse(@NonNull Call<GenerateActivationDataResponse> call, @NonNull Response<GenerateActivationDataResponse> response) {
                                             try {
+                                                assert response.body() != null;
                                                 DSAPPClient.verifySRPServerEvidenceMessage(clientEphemeralKeyResponse.getClientEphemeralPublicKey(), clientSessionKeyResponse.getClientEvidenceMessage(),
                                                         response.body().getResult().getServerEvidenceMessage(), clientSessionKeyResponse.getSessionKey());
                                                 //decryptSRPData(srpSessionKeyResponse,response.body());
@@ -61,7 +64,7 @@ public class DSAPPUserActivationTests {
                                         }
 
                                         @Override
-                                        public void onFailure(Call<GenerateActivationDataResponse> call, Throwable t) {
+                                        public void onFailure(@NonNull Call<GenerateActivationDataResponse> call, @NonNull Throwable t) {
                                             Crashlytics.logException(t);
                                         }
                                     });
@@ -72,7 +75,7 @@ public class DSAPPUserActivationTests {
                     }
 
                     @Override
-                    public void onFailure(Call<GenerateServerEphemeralKeyResponse> call, Throwable t) {
+                    public void onFailure(@NonNull Call<GenerateServerEphemeralKeyResponse> call, @NonNull Throwable t) {
                         Crashlytics.logException(t);
                     }
                 });

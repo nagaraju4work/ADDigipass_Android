@@ -4,7 +4,7 @@ plugins {
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
-    id 'io.fabric'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -71,6 +71,7 @@ repositories {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.0"
     def room_version = "2.4.3"
     api 'com.google.android.gms:play-services-gcm:17.0.0'
     api 'androidx.core:core-ktx:1.9.0'
@@ -86,7 +87,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     testImplementation 'junit:junit:4.13.2'
     api 'com.google.firebase:firebase-core:21.1.1'
-    api 'com.google.firebase:firebase-messaging:23.0.8'
+    api 'com.google.firebase:firebase-messaging:23.1.0'
     //room
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
@@ -95,12 +96,9 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.5.3'
     implementation 'com.chaos.view:pinview:1.4.3'
 
-
-    // (Recommended) Add Analytics
-    implementation 'com.google.firebase:firebase-analytics:21.1.1'
-
-    // Add dependency
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'androidx.annotation:annotation:1.5.0'
+    implementation 'com.esotericsoftware:kryo:5.1.1'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
 
     implementation files('libs/WBCSDK.jar')
     api files('libs/GeolocationSDK.jar')
@@ -120,6 +118,15 @@ dependencies {
 //    implementation files('libs/DSAPP_Client.jar')
 //    implementation files('libs/SecureStorageSDK.jar')
     implementation project(path: ':number-keypad-lib')
+
+
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:30.4.1')
+
+    // Add the dependencies for the Crashlytics and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
 }
 
 java {

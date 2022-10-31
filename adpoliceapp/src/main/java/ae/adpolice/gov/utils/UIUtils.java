@@ -8,13 +8,6 @@ import android.content.DialogInterface;
 
 public class UIUtils {
 
-    public static void displayAlert(final Context context, final String title, final String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.create().show();
-    }
-
     public static void displayAlert(final Context context, final String title, final String message, final String okText, final DialogInterface.OnClickListener okListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);

@@ -6,43 +6,43 @@
 
     <group
         android:checkableBehavior="single"
-        android:title="Protection">
+        android:title="@string/protection">
 
         <item
             android:id="@+id/nav_face_reco"
             android:icon="@drawable/ic_face"
-            android:title="Face recognition"
+            android:title="@string/face_recognition"
             android:visible="false" />
         <item
             android:id="@+id/nav_bio_sendsor"
             android:icon="@drawable/ic_fingerprint"
-            android:title="Biometric Authentication" />
+            android:title="@string/biometric_authentication" />
         <item
             android:id="@+id/nav_pin"
             android:checked="true"
             android:icon="@drawable/ic_dialpad"
-            android:title="PIN" />
+            android:title="@string/pin" />
     </group>
-    <item android:title="Settings">
+    <item android:title="@string/action_settings">
         <menu>
             <item
                 android:id="@+id/nav_actvate"
                 android:icon="@drawable/ic_checked"
-                android:title="Activate" />
+                android:title="@string/activate" />
             <item
                 android:id="@+id/nav_encrol_face"
                 android:icon="@drawable/ic_enroll_face"
-                android:title="Enroll your face"
+                android:title="@string/enrol_your_face"
                 android:visible="false" />
             <item
                 android:id="@+id/nav_change_pin"
                 android:icon="@drawable/ic_dialpad"
                 android:visible="false"
-                android:title="Change your PIN" />
+                android:title="@string/change_pin" />
             <item
                 android:id="@+id/nav_deavtivate"
                 android:icon="@drawable/ic_cross"
-                android:title="Deactivate" />
+                android:title="@string/deactivate" />
             <item
                 android:id="@+id/nav_get_info"
                 android:icon="@drawable/ic_notification"
