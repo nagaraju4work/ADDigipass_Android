@@ -672,7 +672,7 @@ public class MainActivity extends AppCompatActivity implements
                 // Convert the result
                 if (codeType == QRCodeScannerSDKConstants.CRONTO_CODE) {
                     // we have scan a cronto code => convert the hexa string to string
-                    byte[] tmp = UtilitiesSDK.hexaToBytes(result);
+                    byte[] tmp = Constants.hexaToBytes(result);
 
                     String credentials = new String(tmp);
                     String[] values = credentials.split(Utils.STRING_SPLIT_CHARACTER);

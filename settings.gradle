@@ -1,1 +1,1 @@
-include ':adpoliceapp', ':NotificationSDKClient', ':QRCodeScannerSDK', ':UtilitiesSDK', ':number-keypad-lib',':BiometricSensorSDK',':SecureStorageSDK',':DeviceBindingSDK',':DigipassSDK',':DSAPP_Client'
+include ':adpoliceapp', ':NotificationSDKClient', ':QRCodeScannerSDK', ':number-keypad-lib',':BiometricSensorSDK',':SecureStorageSDK',':DeviceBindingSDK',':DSAPP_Client'

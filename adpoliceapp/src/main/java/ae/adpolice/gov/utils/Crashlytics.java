@@ -1,5 +1,6 @@
 package ae.adpolice.gov.utils;
 
+
 import ae.adpolice.gov.BuildConfig;
 
 public class Crashlytics {

@@ -1,16 +1,13 @@
 package ae.adpolice.gov.network;
 
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import ae.adpolice.gov.BuildConfig;
 import ae.adpolice.gov.utils.Crashlytics;
-import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -58,17 +55,9 @@ public class RetrofitClient {
             // Create an ssl socket factory with our all-trusting manager
             final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
-            CertificatePinner certificatePinner = new CertificatePinner.Builder()
-                    .add("api.github.com", "sha256/6wJsqVDF8K19zxfLxV5DGRneLyzso9adVdUN/exDacw=")
-                    .build();
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.sslSocketFactory(sslSocketFactory);
-            builder.hostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            });
+            builder.hostnameVerifier((hostname, session) -> true);
 
             return builder.build();
         } catch (Exception e) {

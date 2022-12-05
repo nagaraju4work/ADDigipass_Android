@@ -50,7 +50,7 @@ public class Utils {
 
         try {
             secureCache = SecureStorageSDK.init("DIGIPASS_SECURE_CACHE",
-                    UtilitiesSDK.bytesToHexa(tempDeviceFingerprint), // TEMP DNA OF THE DEVICE
+                    Constants.bytesToHexa(tempDeviceFingerprint), // TEMP DNA OF THE DEVICE
                     Constants.getIterationNumber(), // SLOWING DOWN BRUTE-FORCING
                     context);
         } catch (SecureStorageSDKException e) {
@@ -107,23 +107,40 @@ public class Utils {
 
     public String[] getActivationPasswords() {
         String cred = getStringFromSecureCache(Constants.CREDENTIALS_KEY);
+        Utils.Log("getActivationPasswords()", cred);
         String[] activationPasswords = new String[2];
-        activationPasswords[0] = cred.split(STRING_SPLIT_CHARACTER)[2];
-        activationPasswords[1] = cred.split(STRING_SPLIT_CHARACTER)[4];
+        if(cred.contains(STRING_SPLIT_CHARACTER)) {
+            activationPasswords[0] = cred.split(STRING_SPLIT_CHARACTER)[2];
+            activationPasswords[1] = cred.split(STRING_SPLIT_CHARACTER)[4];
+        }else{
+            activationPasswords[0] = cred.split(STRING_ALTERNATE_SPLIT_CHARACTER)[2];
+            activationPasswords[1] = cred.split(STRING_ALTERNATE_SPLIT_CHARACTER)[4];
+        }
         return activationPasswords;
     }
 
     public String[] getRegistrationIdentifiers() {
         String cred = getStringFromSecureCache(Constants.CREDENTIALS_KEY);
+        Utils.Log("getRegistrationIdentifiers()", cred);
         String[] registrationIdentifiers = new String[2];
-        registrationIdentifiers[0] = cred.split(STRING_SPLIT_CHARACTER)[1];
-        registrationIdentifiers[1] = cred.split(STRING_SPLIT_CHARACTER)[3];
+        if(cred.contains(STRING_SPLIT_CHARACTER)) {
+            registrationIdentifiers[0] = cred.split(STRING_SPLIT_CHARACTER)[1];
+            registrationIdentifiers[1] = cred.split(STRING_SPLIT_CHARACTER)[3];
+        }else{
+            registrationIdentifiers[0] = cred.split(STRING_ALTERNATE_SPLIT_CHARACTER)[1];
+            registrationIdentifiers[1] = cred.split(STRING_ALTERNATE_SPLIT_CHARACTER)[3];
+        }
         return registrationIdentifiers;
     }
 
     String getUserId() {
         String cred = getStringFromSecureCache(Constants.CREDENTIALS_KEY);
-        return cred.split(STRING_SPLIT_CHARACTER)[0];
+        Utils.Log("getUserId()", cred);
+        if(cred.contains(STRING_SPLIT_CHARACTER)) {
+            return cred.split(STRING_SPLIT_CHARACTER)[0];
+        }else {
+            return cred.split(STRING_ALTERNATE_SPLIT_CHARACTER)[0];
+        }
     }
 
 }

@@ -6,7 +6,6 @@ import android.util.Base64;
 
 import com.vasco.digipass.sdk.utils.devicebinding.DeviceBinding;
 import com.vasco.digipass.sdk.utils.devicebinding.DeviceBindingSDKException;
-import com.vasco.digipass.sdk.utils.utilities.UtilitiesSDK;
 import com.vasco.digipass.sdk.utils.wbc.WBCSDK;
 import com.vasco.digipass.sdk.utils.wbc.WBCSDKConstants;
 import com.vasco.digipass.sdk.utils.wbc.WBCSDKException;
@@ -95,18 +94,75 @@ public class Constants {
 
     private static String encryptAndFormat(String IV, String toEncrypt) {
         // 1. ENCRYPT
-        byte[] B_IV = UtilitiesSDK.hexaToBytes(IV);
-        byte[] B_TO_ENCRYPT = UtilitiesSDK.hexaToBytes(toEncrypt);
+        byte[] B_IV = hexaToBytes(IV);
+        byte[] B_TO_ENCRYPT = hexaToBytes(toEncrypt);
         byte[] B_ENCRYPTED = null;
         try {
-            B_ENCRYPTED = WBCSDK.encrypt(WBCSDKConstants.CRYPTO_MECHANISM_AES, WBCSDKConstants.CRYPTO_MODE_CTR, Constants.tablesToEncrypt, B_IV, B_TO_ENCRYPT);
+            B_ENCRYPTED = WBCSDK.encrypt(WBCSDKConstants.CRYPTO_MECHANISM_AES,
+                    WBCSDKConstants.CRYPTO_MODE_CTR, Constants.tablesToEncrypt, B_IV, B_TO_ENCRYPT);
         } catch (WBCSDKException e) {
             Utils.Log("WBC ENCRYPT", "ERROR:" + e.getLocalizedMessage() + e.getErrorCode());
             // something went wrong
             Crashlytics.logException(e);
         }
 
-        return UtilitiesSDK.bytesToHexa(B_ENCRYPTED);
+        return bytesToHexa(B_ENCRYPTED);
+    }
+
+    public static String bytesToHexa(byte[] array) {
+        if (array == null) {
+            return null;
+        } else {
+            StringBuilder var2 = new StringBuilder();
+
+            for (byte b : array) {
+                int var4 = b & 255;
+                String var1 = Integer.toHexString(var4);
+                if (var1.length() == 1) {
+                    var2.append('0');
+                }
+                var2.append(var1);
+            }
+
+            return var2.toString().toUpperCase();
+        }
+    }
+
+    public static int hexaToBytes(String str, byte[] buffer, int offset) {
+        int var7 = str.length() / 2;
+
+        for(int var8 = 0; var8 < var7; ++var8) {
+            char var3 = str.charAt(var8 * 2);
+            byte var5 = charToByte(var3);
+            char var4 = str.charAt(var8 * 2 + 1);
+            byte var6 = charToByte(var4);
+            buffer[var8 + offset] = (byte)((var5 << 4) + var6);
+        }
+
+        return var7;
+    }
+
+    public static byte[] hexaToBytes(String str) {
+        if (str == null) {
+            return null;
+        } else {
+            byte[] var1 = new byte[str.length() / 2];
+            hexaToBytes(str, var1, 0);
+            return var1;
+        }
+    }
+
+    private static byte charToByte(char var0) {
+        byte var1;
+        if (var0 >= 'a') {
+            var1 = (byte)(var0 - 97 + 10);
+        } else if (var0 >= 'A') {
+            var1 = (byte)(var0 - 65 + 10);
+        } else {
+            var1 = (byte)(var0 - 48);
+        }
+
+        return var1;
     }
 
     public static int getIterationNumber() {

@@ -33,8 +33,8 @@ android {
             minSdkVersion 23
             applicationId 'ae.adpolice.gov'
             targetSdkVersion 32
-            versionCode 1
-            versionName '1.0'
+            versionCode 2
+            versionName '1.1'
             resValue "string", "app_name", "AD Digipass"
             buildConfigField 'String', 'API_HOST', '"' + ENDPOINT_URL + '"'
             buildConfigField 'String', 'DOMAIN','"auh.police"'
@@ -93,28 +93,30 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
-    implementation 'androidx.fragment:fragment-ktx:1.5.3'
+    implementation 'androidx.fragment:fragment-ktx:1.5.4'
     implementation 'com.chaos.view:pinview:1.4.3'
 
-    implementation 'androidx.annotation:annotation:1.5.0'
+    implementation 'androidx.annotation:annotation:1.2.0'
     implementation 'com.esotericsoftware:kryo:5.1.1'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
 
-    implementation files('libs/WBCSDK.jar')
+    implementation fileTree(include: '*.jar', dir: 'libs')
     api files('libs/GeolocationSDK.jar')
     //api files('libs/BiometricSensorSDK.jar')
     api files('libs/samsung_sdk.jar')
     api files('libs/samsung_sdk_pass.jar')
-    api (name: 'UtilitiesSDK', ext: 'aar')
+    api(name: 'UtilitiesSDK', ext: 'aar')
+    implementation(name: 'DigipassSDK', ext: 'aar')
     implementation project(path: ':NotificationSDKClient')
     implementation project(path: ':QRCodeScannerSDK')
     implementation project(path: ':BiometricSensorSDK')
     implementation project(path: ':DeviceBindingSDK')
-    implementation project(path: ':DigipassSDK')
+    //implementation project(path: ':DigipassSDK')
     implementation project(path: ':DSAPP_Client')
     implementation project(path: ':SecureStorageSDK')
+
 //    implementation files('libs/DeviceBindingSDK.jar')
-//    implementation files('libs/DigipassSDK.jar')
+    //implementation files('libs/DigipassSDK.aar')
 //    implementation files('libs/DSAPP_Client.jar')
 //    implementation files('libs/SecureStorageSDK.jar')
     implementation project(path: ':number-keypad-lib')

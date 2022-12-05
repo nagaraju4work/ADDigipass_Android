@@ -174,7 +174,7 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
             openMainScreen();
             return;
         }
-        byte[] hexStringBytes = UtilitiesSDK.hexaToBytes(secureChannelDecryptionResponse.getMessageBody());
+        byte[] hexStringBytes = Constants.hexaToBytes(secureChannelDecryptionResponse.getMessageBody());
         String notificationString = new String(hexStringBytes);
         final String challengeKey = notificationString.split(";")[2];
         DigipassPropertiesResponse digipassPropertiesResponse = DigipassSDK.getDigipassProperties(
@@ -225,7 +225,7 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
                     openMainScreen();
                     return;
                 }
-                byte[] hexStringBytes1 = UtilitiesSDK.hexaToBytes(secureChannelDecryptionResponse1.getMessageBody());
+                byte[] hexStringBytes1 = Constants.hexaToBytes(secureChannelDecryptionResponse1.getMessageBody());
                 String notificationString1 = new String(hexStringBytes1);
                 String userId = notificationString1.split(";")[4];
                 String domain = notificationString1.split(";")[5];
@@ -270,7 +270,7 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
                 } else {
                     Utils.Log(TAG, "Pressed NOK " + yesNo);
                     SecureChannelGenerateResponse secureChannelGenerateResponse = DigipassSDK.generateSecureChannelInformationMessage(staticVector, dynamicVector,
-                            UtilitiesSDK.bytesToHexa(challengeKey.getBytes()), DigipassSDKConstants.SECURE_CHANNEL_MESSAGE_PROTECTION_HMAC_AESCTR,
+                            Constants.bytesToHexa(challengeKey.getBytes()), DigipassSDKConstants.SECURE_CHANNEL_MESSAGE_PROTECTION_HMAC_AESCTR,
                             Constants.getDevicePlatformFingerprintForDigipass(HandleFCMNotificationActivity.this));
                     if (secureChannelDecryptionResponse.getReturnCode() != DigipassSDKReturnCodes.SUCCESS) {
                         Toast.makeText(HandleFCMNotificationActivity.this, "" + DigipassSDK.getMessageForReturnCode(secureChannelDecryptionResponse.getReturnCode()), Toast.LENGTH_SHORT).show();
