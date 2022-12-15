@@ -1,8 +1,10 @@
 package ae.adpolice.gov.fcm;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -26,6 +28,8 @@ import com.vasco.digipass.sdk.utils.biometricsensor.BiometricSensorSDKScanListen
 import com.vasco.digipass.sdk.utils.notification.client.NotificationSDKClient;
 import com.vasco.digipass.sdk.utils.notification.client.exceptions.NotificationSDKClientException;
 import com.vasco.digipass.sdk.utils.utilities.UtilitiesSDK;
+
+import java.util.Map;
 
 import ae.adpolice.gov.Constants;
 import ae.adpolice.gov.MainActivity;
@@ -332,6 +336,15 @@ public class HandleFCMNotificationActivity extends AppCompatActivity implements 
                     Utils.getInstance().initSecureCache(HandleFCMNotificationActivity.this);
                 }
 
+                Map<String, String> customAttributes =
+                        NotificationSDKClient.getCustomAttributes(intent);
+                for (Map.Entry<String, String> entry : customAttributes.entrySet()) {
+                    Utils.Log(TAG, "Custom attribute: " + entry.getKey() + " - " + entry.getValue());
+                }
+
+                if (NotificationSDKClient.isForegroundNotification(intent)) {
+                    UIUtils.displayAlert(HandleFCMNotificationActivity.this, getString(R.string.app_name), "Notification received in the foreground.", getString(android.R.string.ok), (dialogInterface, i) -> dialogInterface.dismiss());
+                }
                 // Parse the notification and retrieve its content.
                 Utils.getInstance().putStringInSecureCache(Constants.NOTIFICATION_CONTENT_KEY, NotificationSDKClient.parseVASCONotification(intent));
                 Utils.Log(TAG, Utils.getInstance().getStringFromSecureCache(Constants.NOTIFICATION_CONTENT_KEY));
